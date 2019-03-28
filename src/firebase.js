@@ -2,12 +2,12 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 const config = {
-  apiKey: "AIzaSyBzBYJx3eLytBelVWqpfBJebMLQGbRbAe4",
-  authDomain: "gcc-pagespeed-firebase.firebaseapp.com",
-  databaseURL: "https://gcc-pagespeed-firebase.firebaseio.com",
-  projectId: "gcc-pagespeed-firebase",
-  storageBucket: "gcc-pagespeed-firebase.appspot.com",
-  messagingSenderId: "149358079983"
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  databaseURL: process.env.databaseURL,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
 };
 
 firebase.initializeApp(config);
