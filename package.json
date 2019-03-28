@@ -1,0 +1,42 @@
+{
+  "name": "gcc-pagespeed-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run devServer",
+    "devServer": "webpack-dev-server --config webpack.config.js --open --hot --inline",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chart.js": "^2.8.0",
+    "firebase": "^5.9.1",
+    "moment": "^2.24.0",
+    "react": "^16.7.0",
+    "react-chartjs-2": "^2.7.6",
+    "react-dom": "^16.7.0",
+    "react-router-dom": "^4.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "clean-webpack-plugin": "^1.0.0",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chasingTheRate/gcc-pagespeed-react.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chasingTheRate/gcc-pagespeed-react/issues"
+  },
+  "homepage": "https://github.com/chasingTheRate/gcc-pagespeed-react#readme"
+}
