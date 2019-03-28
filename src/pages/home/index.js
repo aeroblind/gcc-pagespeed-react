@@ -3,6 +3,8 @@ import firebase from '../../firebase';
 import moment from 'moment';
 import { Line } from 'react-chartjs-2';
 
+import './home.css';
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -60,6 +62,10 @@ class Home extends Component {
     return (
       <div>
         {Object.keys(scores).length > 0 && <Line data={data} />}
+        <div className="action-container">
+          <button>Start</button>
+          <button>Stop</button>
+        </div>
       </div>      
     )
   }

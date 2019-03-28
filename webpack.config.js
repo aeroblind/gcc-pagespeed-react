@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const clearWebpackPlugin = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   mode: 'development',
@@ -30,7 +31,8 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: 'src/templates/index.html'
-    })
+    }),
+    new Dotenv(),
   ],
   devtool: 'inline-source-map',
   devServer: {
