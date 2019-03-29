@@ -16,7 +16,7 @@ class Home extends Component {
     }
 
     const scoreRef = firebase.database().ref('/performance/scores')
-    scoreRef.on('value', this.handleSnapshot)
+    .on('value', this.handleSnapshot)
   }
 
   handleSnapshot(snapshot) {
@@ -48,6 +48,11 @@ class Home extends Component {
     }
   }
 
+  handleClick(e){
+    console.log('did click');
+    console.log(e);
+  }
+
   render() {
     const { scores } = this.state;
     const graphData = this.getGraphData(scores);
@@ -56,12 +61,23 @@ class Home extends Component {
       datasets: [{
           label: 'PageSpeed Insight Performance Score',
           data: graphData.data,
-          borderWidth: 1
+          borderWidth: 1,
       }]
-  }
+    }
+    const options = {
+      scales: {
+        yAxes: [{
+          display: true,
+          ticks: {
+            beginAtZero: true,
+            max: 1
+          }
+        }]
+      }
+    }
     return (
       <div>
-        {Object.keys(scores).length > 0 && <Line data={data} />}
+        {Object.keys(scores).length > 0 && <Line data={data} options={options} getElementAtEvent={this.handleClick} />}
         <div className="action-container">
           <button>Start</button>
           <button>Stop</button>
