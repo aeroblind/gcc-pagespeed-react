@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "prestart": "webpack",
+    "bundle": "webpack",
+    "prestart": "npm run bundle",
     "start": "node server.js",
     "start:dev": "npm run devServer",
     "devServer": "webpack-dev-server --config webpack.config.js --open --hot --inline"
