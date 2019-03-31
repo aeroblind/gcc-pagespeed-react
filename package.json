@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "bundle": "webpack",
+    "bundle": "./node_modules/.bin/webpack --config webpack.config.js",
     "prestart": "npm run bundle",
     "start": "node server.js",
     "start:dev": "npm run devServer",
