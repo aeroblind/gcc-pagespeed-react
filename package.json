@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "bundle": "./node_modules/.bin/webpack --config webpack.config.js",
-    "prestart": "npm run bundle",
+    "gcp-build": "webpack",
+    "prestart": "npm run gcp-build",
     "start": "node server.js",
     "start:dev": "npm run devServer",
     "devServer": "webpack-dev-server --config webpack.config.js --open --hot --inline"

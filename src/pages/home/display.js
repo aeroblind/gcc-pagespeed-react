@@ -73,17 +73,17 @@ const Display = ({state, handleCheckBoxChange, handleButtonClick}) => {
       </Container>
       </Container>
       <div>
-        {bcomProd.show && 
+        {bcomProd.show &&
           <Container margin={'15px 0 0 0'}>
             <Line data={getGraphData(bcomProd.displayName, bcomProd.scores)} options={options} />
           </Container>
         }
-        {bcomStage.show && 
+        {bcomStage.show &&
           <Container margin={'15px 0 0 0'}>
             <Line data={getGraphData(bcomStage.displayName, bcomStage.scores)} options={options}/>
           </Container>
         }
-        {bcomDev.show && 
+        {bcomDev.show &&
           <Container margin={'15px 0 0 0'}>
             <Line data={getGraphData(bcomDev.displayName, bcomDev.scores)} options={options}/>
           </Container>
