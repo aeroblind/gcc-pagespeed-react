@@ -22,7 +22,7 @@ class Home extends Component {
     }
   
     this.state = {
-      startAt: '',
+      startAt: this.getTimeMinusMinutes(15),
       websites: {
         bcomProd: {
           show: true,
@@ -44,7 +44,7 @@ class Home extends Component {
   }
 
   componentDidMount(){
-    this.updateFirebaseRefs(this.getTimeMinusMinutes(15));
+    this.updateFirebaseRefs(this.state.startAt);
   }
 
   updateFirebaseRefs(startTime){
@@ -99,7 +99,7 @@ class Home extends Component {
     }
     this.setState({
       startAt: startAtTime
-    }, this.updateFirebaseRefs(startAtTime))
+    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(id)))
   }
 
   getTimeMinusMinutes(minutes) {
