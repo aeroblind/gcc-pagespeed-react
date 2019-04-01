@@ -62,14 +62,14 @@ const Display = ({state, handleCheckBoxChange, handleButtonClick}) => {
             {createCheckboxes()}
         </FlexBox>
       <Container padding={'10px 0 10px 0'}>
-        <FlexBox>
-            <Button id="15" margin={'0 10px 0 0'} onClick={handleButtonClick}>15min</Button>          
-            <Button id="30" margin={'0 10px 0 0'} onClick={handleButtonClick}>30min</Button>
-            <Button id="60" margin={'0 10px 0 0'} onClick={handleButtonClick}>1 Hour</Button>
-            <Button id="240" margin={'0 10px 0 0'} onClick={handleButtonClick}>4 Hours</Button>
-            <Button id="1440" margin={'0 10px 0 0'} onClick={handleButtonClick}>24 Hours</Button>
-            <Button id="all" margin={'0 10px 0 0'} onClick={handleButtonClick}>All</Button>
-          </FlexBox>
+        <FlexBox overflow="scroll" padding={'0 0 15px 0'}>
+          <Button id="15" margin={'0 10px 0 0'} onClick={handleButtonClick}>15min</Button>          
+          <Button id="30" margin={'0 10px 0 0'} onClick={handleButtonClick}>30min</Button>
+          <Button id="60" margin={'0 10px 0 0'} onClick={handleButtonClick}>1 Hour</Button>
+          <Button id="240" margin={'0 10px 0 0'} onClick={handleButtonClick}>4 Hours</Button>
+          <Button id="1440" margin={'0 10px 0 0'} onClick={handleButtonClick}>24 Hours</Button>
+          <Button id="all" margin={'0 10px 0 0'} onClick={handleButtonClick}>All</Button>
+        </FlexBox>
       </Container>
       </Container>
       <div>

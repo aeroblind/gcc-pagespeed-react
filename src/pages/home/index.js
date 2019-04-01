@@ -64,10 +64,7 @@ class Home extends Component {
   }
 
   handleSnapshot(key,snapshot) {
-    var scores = snapshot.val();
-    if (scores === null){
-      return;
-    }
+    var scores = snapshot.val() || {};
     let newObj = Object.assign({}, this.state.websites)
     newObj[key].scores = scores;
     this.setState({
