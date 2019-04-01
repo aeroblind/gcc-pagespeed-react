@@ -61,8 +61,8 @@ const Display = ({state, handleCheckBoxChange, handleButtonClick}) => {
         <FlexBox>
             {createCheckboxes()}
         </FlexBox>
-      <Container padding={'10px 0 10px 0'}>
-        <FlexBox overflow="scroll" padding={'0 0 15px 0'}>
+      <Container padding={'0'}>
+        <FlexBox overflow="scroll" padding={'20px 0 15px 0'}>
           <Button id="15" margin={'0 10px 0 0'} onClick={handleButtonClick}>15min</Button>          
           <Button id="30" margin={'0 10px 0 0'} onClick={handleButtonClick}>30min</Button>
           <Button id="60" margin={'0 10px 0 0'} onClick={handleButtonClick}>1 Hour</Button>
