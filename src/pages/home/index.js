@@ -23,6 +23,7 @@ class Home extends Component {
   
     this.state = {
       startAt: this.getTimeMinusMinutes(15),
+      timeFormat: 'LTS',
       websites: {
         bcomProd: {
           show: true,
@@ -52,6 +53,7 @@ class Home extends Component {
       if (this.state.websites[key].show) {
         if(!startTime){
           //  Show all points
+          console.log('show all');
           this.dbRefs[key].on("value", (snapshot) => this.handleSnapshot(key, snapshot))
         } else {
           this.dbRefs[key]
@@ -72,14 +74,6 @@ class Home extends Component {
     })
   }
 
-  displayScores(scores) {
-    const elements = [];
-    Object.entries(scores).forEach(([key, score]) => {
-      elements.push(<div key={key}>{`Time: ${moment(score.fetchTime).format('MM/DD/YYYY h:mm a')}, Score: ${score.score}`}</div>)
-    })
-    return elements;
-  }
-
   handleCheckBoxChange(e) {
     const id = e.target.id;
     let newObj = Object.assign({}, this.state.websites)
@@ -91,15 +85,18 @@ class Home extends Component {
 
   handleButtonClick(e) {
     const id = e.target.id;
-    var startAtTime = ''
+    var startAtTime = '';
+    var timeFormat = 'LTS';
     if (id === 'all') {
-      startAtTime = null
+      startAtTime = null;
+      timeFormat = 'lll';
     } else {
       startAtTime = this.getTimeMinusMinutes(id);
     }
     this.setState({
-      startAt: startAtTime
-    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(id)))
+      startAt: startAtTime,
+      timeFormat,
+    }, this.updateFirebaseRefs(startAtTime))
   }
 
   getTimeMinusMinutes(minutes) {

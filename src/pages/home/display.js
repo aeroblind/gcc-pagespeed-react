@@ -8,6 +8,7 @@ import Button from '../../components/styled/Button';
 const Display = ({state, handleCheckBoxChange, handleButtonClick}) => {
 
   const { bcomProd, bcomStage, bcomDev } = state.websites;
+  const { timeFormat } = state;
 
   const options = {
     scales: {
@@ -39,7 +40,7 @@ const Display = ({state, handleCheckBoxChange, handleButtonClick}) => {
     const labels = [];
     const data = [];
     Object.entries(scores).forEach(([_, score]) => {
-      labels.push(moment(score.fetchTime).format('MM/DD/YYYY h:mm a'));
+      labels.push(moment(score.fetchTime).format(timeFormat));
       data.push(score.score);
     })
 
