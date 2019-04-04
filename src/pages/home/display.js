@@ -4,9 +4,6 @@ import moment from 'moment';
 import Container from '../../components/styled/Container';
 import FlexBox from '../../components/styled/FlexBox';
 import Button from '../../components/styled/Button';
-import ReactTable from "react-table";
-
-import 'react-table/react-table.css'
 
 const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handleButtonClick, onDataPointClick}) => {
 
@@ -20,6 +17,22 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
         ticks: {
           beginAtZero: true,
           max: 1
+        }
+      }]
+    }
+  }
+
+  const metricOptions = {
+    scales: {
+      yAxes: [{
+        display: true,
+        ticks: {
+          beginAtZero: true,
+        }
+      }],
+      xAxes:[{
+        ticks: {
+          display: false,
         }
       }]
     }
@@ -172,6 +185,7 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
             <h3>Prod</h3>
             <Scatter
               id="bcomProd"
+              options={metricOptions}
               data={getMetricsGraphData(bcomProd.scores)} 
               onElementsClick = {handleOnClick} />
           </Container>
@@ -181,6 +195,7 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
             <h3>Stage</h3>
             <Scatter
               id="bcomStage"
+              options={metricOptions}
               data={getMetricsGraphData(bcomStage.scores)} 
               onElementsClick = {handleOnClick} />
           </Container>
@@ -190,6 +205,7 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
           <h3>Dev</h3>
           <Scatter
             id="bcomDev"
+            options={metricOptions}
             data={getMetricsGraphData(bcomDev.scores)} 
             onElementsClick = {handleOnClick} />
         </Container>
