@@ -14,6 +14,8 @@ class Home extends Component {
     this.updateFirebaseRefs = this.updateFirebaseRefs.bind(this);
     this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
     this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.handleDataPointClick = this.handleDataPointClick.bind(this);
+    this.handleMetricCheckBoxChange = this.handleMetricCheckBoxChange.bind(this);
 
     this.dbRefs = {
       bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
@@ -23,6 +25,56 @@ class Home extends Component {
   
     this.state = {
       startAt: this.getTimeMinusMinutes(15),
+      metrics: {
+        firstContentfulPaint:{
+          displayName:'First Contentful Paint',
+          show: true,
+          dataKey: 'firstContentfulPaint',
+          chartLabel: 'FCP(s)',
+          color: 'red',
+          factor: 1000,
+        },
+        speedIndex:{
+          displayName: 'Speed Index',
+          show: true,
+          dataKey: 'speedIndex',
+          chartLabel: 'SI(s)',
+          color: 'blue',
+          factor: 1000,
+        },
+        timeToInteractive:{
+          displayName: 'Time to Interactive',
+          show: true,
+          dataKey: 'interactive',
+          chartLabel: 'TTI(s)',
+          color: 'teal',
+          factor: 1000,
+        },
+        firstMeaningfulPaint:{
+          displayName: 'First Meaningful Paint',
+          show: false,
+          dataKey: 'firstMeaningfulPaint',
+          chartLabel: 'FMP(s)',
+          color: 'maroon',
+          factor: 1000,
+        },
+        firstCpuIdle:{
+          displayName: 'First CPU Idle',
+          show: false,
+          dataKey: 'firstCPUIdle',
+          chartLabel: 'FCI(s)',
+          color: 'orange',
+          factor: 1000,
+        },
+        estimatedInputLatency:{
+          displayName: 'Estimated Input Latency',
+          show: false,
+          dataKey: 'estimatedInputLatency',
+          chartLabel: 'EIL(ms)',
+          color: 'yellow',
+          factor: 1000,
+        }
+      },
       timeFormat: 'LTS',
       websites: {
         bcomProd: {
@@ -83,6 +135,15 @@ class Home extends Component {
     }, this.updateFirebaseRefs(this.state.startAt));
   }
 
+  handleMetricCheckBoxChange(e) {
+    const id = e.target.id;
+    let newObj = Object.assign({}, this.state.metrics)
+    newObj[id].show = e.target.checked;
+    this.setState({
+      metrics: newObj
+    });
+  }
+
   handleButtonClick(e) {
     const id = e.target.id;
     var startAtTime = '';
@@ -103,12 +164,18 @@ class Home extends Component {
     return moment.utc().subtract(minutes, 'minutes').format();
   }
 
+  handleDataPointClick(id, index) {
+    console.log(Object.entries(this.state.websites[id].scores)[index][1]);
+  }
+
   render() {
     return (
       <Display 
         state={this.state} 
         handleCheckBoxChange={this.handleCheckBoxChange}
         handleButtonClick={this.handleButtonClick}
+        onDataPointClick={this.handleDataPointClick}
+        handleMetricCheckBoxChange={this.handleMetricCheckBoxChange}
       />
     )
   }

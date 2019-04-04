@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const clearWebpackPlugin = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -26,6 +27,9 @@ module.exports = {
     ],
   },
   resolve: { extensions: ['*', '.js', '.jsx'] },
+  optimization: {
+    minimizer: [new UglifyJsPlugin()],
+  },
   plugins: [
     new clearWebpackPlugin(['dist']),
     new webpack.HotModuleReplacementPlugin(),
