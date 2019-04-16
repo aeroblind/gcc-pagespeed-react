@@ -129,7 +129,7 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
   }
 
   return (
-    <div>
+    <div style={{padding: '30px 50px 30px 50px'}}>
       <Container boxShadow>
         <FlexBox>
             {createCheckboxes()}
@@ -180,40 +180,39 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
           </FlexBox>
         </Container>
         <div>
-        {bcomProd.show &&
-          <Container margin={'15px 0 0 0'}>
-            <h3>Prod</h3>
+          {bcomProd.show &&
+            <Container margin={'15px 0 0 0'}>
+              <h3>Prod</h3>
+              <Scatter
+                id="bcomProd"
+                options={metricOptions}
+                data={getMetricsGraphData(bcomProd.scores)} 
+                onElementsClick = {handleOnClick} />
+            </Container>
+          }
+          {bcomStage.show &&
+            <Container margin={'15px 0 0 0'}>
+              <h3>Stage</h3>
+              <Scatter
+                id="bcomStage"
+                options={metricOptions}
+                data={getMetricsGraphData(bcomStage.scores)} 
+                onElementsClick = {handleOnClick} />
+            </Container>
+          }
+          {bcomDev.show &&
+            <Container margin={'15px 0 0 0'}>
+            <h3>Dev</h3>
             <Scatter
-              id="bcomProd"
+              id="bcomDev"
               options={metricOptions}
-              data={getMetricsGraphData(bcomProd.scores)} 
+              data={getMetricsGraphData(bcomDev.scores)} 
               onElementsClick = {handleOnClick} />
           </Container>
-        }
-        {bcomStage.show &&
-          <Container margin={'15px 0 0 0'}>
-            <h3>Stage</h3>
-            <Scatter
-              id="bcomStage"
-              options={metricOptions}
-              data={getMetricsGraphData(bcomStage.scores)} 
-              onElementsClick = {handleOnClick} />
-          </Container>
-        }
-        {bcomDev.show &&
-          <Container margin={'15px 0 0 0'}>
-          <h3>Dev</h3>
-          <Scatter
-            id="bcomDev"
-            options={metricOptions}
-            data={getMetricsGraphData(bcomDev.scores)} 
-            onElementsClick = {handleOnClick} />
-        </Container>
-        }
+          }
         </div>
-
       </div>
-    </div> 
+    </div>
   )
 }
 

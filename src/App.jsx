@@ -5,6 +5,11 @@ import ReactDOM from 'react-dom';
 
 import Home from './pages/home';
 
+//  bootstrap
+import 'jquery/dist/jquery.min';
+import 'bootstrap/dist/js/bootstrap.min';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 document.addEventListener('DOMContentLoaded', () => {
   const target = document.getElementById('root');
   if (target) {

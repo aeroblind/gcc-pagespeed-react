@@ -8,12 +8,15 @@
     "prestart": "npm run gcp-build",
     "start": "node server.js",
     "start:dev": "npm run devServer",
-    "devServer": "webpack-dev-server --config webpack.config.js --open --hot --inline"
+    "devServer": "webpack-dev-server --config webpack.config.js --open --hot --inline",
+    "set": "gcloud config set project gcc-pagespeed-react",
+    "deploy": "npm run set && gcloud app deploy --quiet"
   },
   "dependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
+    "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
     "clean-webpack-plugin": "^1.0.0",
     "css-loader": "^2.1.1",
@@ -22,7 +25,9 @@
     "express": "^4.16.4",
     "firebase": "^5.9.1",
     "html-webpack-plugin": "^3.2.0",
+    "jquery": "^3.4.0",
     "moment": "^2.24.0",
+    "popper.js": "^1.15.0",
     "react": "^16.7.0",
     "react-chartjs-2": "^2.7.6",
     "react-dom": "^16.7.0",
