@@ -84,46 +84,55 @@ class Home extends Component {
       timeFormat: 'LTS',
       websites: {
         bcomProd: {
+          id: 'bcomProd',
           show: true,
           scores: {},
           displayName: 'Prod',
         },
         bcomStage: {
+          id: 'bcomStage',
           show: false,
           scores: {},
           displayName: 'Stage',
         },
         bcomDev: {
+          id: 'bcomDev',
           show: false,
           scores: {},
           displayName: 'Dev',
         },
         bcomProdPlp: {
+          id: 'bcomProdPlp',
           show: true,
           scores: {},
           displayName: 'Prod-PLP',
         },
         bcomStagePlp: {
+          id: 'bcomStagePlp',
           show: false,
           scores: {},
           displayName: 'Stage-PLP',
         },
         bcomDevPlp: {
+          id: 'bcomDevPlp',
           show: false,
           scores: {},
           displayName: 'Dev-PLP',
         },
         bcomProdPip: {
+          id: 'bcomProdPip',
           show: true,
           scores: {},
           displayName: 'Prod-PIP',
         },
         bcomStagePip: {
+          id: 'bcomStagePip',
           show: false,
           scores: {},
           displayName: 'Stage-PIP',
         },
         bcomDevPip: {
+          id: 'bcomDevPip',
           show: false,
           scores: {},
           displayName: 'Dev-PIP',

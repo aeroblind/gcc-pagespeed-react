@@ -18,7 +18,8 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
     bcomStagePip,
     bcomDevPip,
   } = state.websites;
-  const { timeFormat } = state;
+
+  const { timeFormat, websites } = state;
 
   const options = {
     scales: {
@@ -151,87 +152,19 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
       </Container>
       </Container>
       <div>
-        {bcomProd.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomProd"
-              data={getGraphData(bcomProd.displayName, bcomProd.scores)} 
-              options={options} 
-              onElementsClick = {handleOnClick} />
-          </Container>
-        }
-        {bcomStage.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomStage"
-              data={getGraphData(bcomStage.displayName, bcomStage.scores)} 
-              options={options} 
-              onElementsClick={handleOnClick}/>
-          </Container>
-        }
-        {bcomDev.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomDev"
-              data={getGraphData(bcomDev.displayName, bcomDev.scores)}
-              options={options}
-              onElementsClick={handleOnClick}/>
-          </Container>
-        }
-        {bcomProdPlp.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomProdPLp"
-              data={getGraphData(bcomProdPlp.displayName, bcomProdPlp.scores)} 
-              options={options} 
-              onElementsClick = {handleOnClick} />
-          </Container>
-        }
-        {bcomStagePlp.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomStagePlp"
-              data={getGraphData(bcomStagePlp.displayName, bcomStagePlp.scores)} 
-              options={options} 
-              onElementsClick={handleOnClick}/>
-          </Container>
-        }
-        {bcomDevPlp.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomDevPlp"
-              data={getGraphData(bcomDevPlp.displayName, bcomDevPlp.scores)}
-              options={options}
-              onElementsClick={handleOnClick}/>
-          </Container>
-        }
-        {bcomProdPip.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomProdPip"
-              data={getGraphData(bcomProdPip.displayName, bcomProdPip.scores)} 
-              options={options} 
-              onElementsClick = {handleOnClick} />
-          </Container>
-        }
-        {bcomStagePip.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomStagePip"
-              data={getGraphData(bcomStagePip.displayName, bcomStagePip.scores)} 
-              options={options} 
-              onElementsClick={handleOnClick}/>
-          </Container>
-        }
-        {bcomDevPip.show &&
-          <Container margin={'15px 0 0 0'}>
-            <Line
-              id="bcomDevPip"
-              data={getGraphData(bcomDevPip.displayName, bcomDevPip.scores)}
-              options={options}
-              onElementsClick={handleOnClick}/>
-          </Container>
-        }
+        {Object.entries(websites).map(([key, website], index) => {
+          if (website.show) {
+            return (
+              <Container key={index} margin={'15px 0 0 0'}>
+                <Line
+                  id={website.id}
+                  data={getGraphData(website.displayName, website.scores)} 
+                  options={options} 
+                  onElementsClick = {handleOnClick} />
+              </Container>
+            )
+          }
+        })}
         <h2>Metrics (beta)</h2>
         <Container boxShadow>
           <FlexBox>
@@ -239,96 +172,20 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
           </FlexBox>
         </Container>
         <div>
-          {bcomProd.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Prod</h3>
-              <Scatter
-                id="bcomProd"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomProd.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomStage.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Stage</h3>
-              <Scatter
-                id="bcomStage"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomStage.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomDev.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Dev</h3>
-              <Scatter
-                id="bcomDev"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomDev.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomProdPlp.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Prod-PLP</h3>
-              <Scatter
-                id="bcomProdPlp"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomProdPlp.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomStagePlp.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Stage-PLP</h3>
-              <Scatter
-                id="bcomStagePlp"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomStagePlp.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomDevPlp.show &&
-            <Container margin={'15px 0 0 0'}>
-            <h3>Dev-PLP</h3>
-            <Scatter
-              id="bcomDevPlp"
-              options={metricOptions}
-              data={getMetricsGraphData(bcomDevPlp.scores)} 
-              onElementsClick = {handleOnClick} />
-          </Container>
-          }
-          {bcomProdPip.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Prod-PIP</h3>
-              <Scatter
-                id="bcomProd"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomProdPip.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomStagePip.show &&
-            <Container margin={'15px 0 0 0'}>
-              <h3>Stage-PIP</h3>
-              <Scatter
-                id="bcomStagePip"
-                options={metricOptions}
-                data={getMetricsGraphData(bcomStagePip.scores)} 
-                onElementsClick = {handleOnClick} />
-            </Container>
-          }
-          {bcomDevPip.show &&
-            <Container margin={'15px 0 0 0'}>
-            <h3>Dev-PIP</h3>
-            <Scatter
-              id="bcomDevPip"
-              options={metricOptions}
-              data={getMetricsGraphData(bcomDevPip.scores)} 
-              onElementsClick = {handleOnClick} />
-          </Container>
-          }
+          {Object.entries(websites).map(([key, website], index) => {
+            if (website.show) {
+              return (
+                <Container key={index} margin={'15px 0 0 0'}>
+                  <h3>{ website.displayName }</h3>
+                  <Scatter
+                    id={ website.id }
+                    options={metricOptions}
+                    data={getMetricsGraphData(website.scores)} 
+                    onElementsClick = {handleOnClick} />
+                </Container>
+              )
+            }
+          })}
         </div>
       </div>
     </div>
