@@ -305,7 +305,7 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
               <Scatter
                 id="bcomProd"
                 options={metricOptions}
-                data={getMetricsGraphData(bcomProd.scores)} 
+                data={getMetricsGraphData(bcomProdPip.scores)} 
                 onElementsClick = {handleOnClick} />
             </Container>
           }
