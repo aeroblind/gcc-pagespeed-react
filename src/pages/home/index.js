@@ -16,6 +16,7 @@ class Home extends Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDataPointClick = this.handleDataPointClick.bind(this);
     this.handleMetricCheckBoxChange = this.handleMetricCheckBoxChange.bind(this);
+    this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
 
     this.dbRefs = {
       bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
@@ -100,7 +101,14 @@ class Home extends Component {
     this.updateFirebaseRefs(this.state.startAt);
   }
 
+  removeFirebaseListeners() {
+    Object.keys(this.dbRefs).forEach((key) => {
+      this.dbRefs[key].off();
+    })
+  }
+
   updateFirebaseRefs(startTime){
+    this.removeFirebaseListeners();
     Object.keys(this.dbRefs).forEach((key) => {
       if (this.state.websites[key].show) {
         if(!startTime){
