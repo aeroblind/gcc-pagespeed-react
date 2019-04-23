@@ -22,6 +22,12 @@ class Home extends Component {
       bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
       bcomStage: firebase.database().ref('/performance/bcom-stage/scores'),
       bcomDev: firebase.database().ref('/performance/bcom-dev/scores'),
+      bcomProdPlp: firebase.database().ref('/performance/bcom-prod-plp/scores'),
+      bcomStagePlp: firebase.database().ref('/performance/bcom-stage-plp/scores'),
+      bcomDevPlp: firebase.database().ref('/performance/bcom-dev-plp/scores'),
+      bcomProdPip: firebase.database().ref('/performance/bcom-prod-pip/scores'),
+      bcomStagePip: firebase.database().ref('/performance/bcom-stage-pip/scores'),
+      bcomDevPip: firebase.database().ref('/performance/bcom-dev-pip/scores'),
     }
   
     this.state = {
@@ -79,19 +85,58 @@ class Home extends Component {
       timeFormat: 'LTS',
       websites: {
         bcomProd: {
+          id: 'bcomProd',
           show: true,
           scores: {},
           displayName: 'Prod',
         },
         bcomStage: {
+          id: 'bcomStage',
           show: false,
           scores: {},
           displayName: 'Stage',
         },
         bcomDev: {
+          id: 'bcomDev',
           show: false,
           scores: {},
           displayName: 'Dev',
+        },
+        bcomProdPlp: {
+          id: 'bcomProdPlp',
+          show: true,
+          scores: {},
+          displayName: 'Prod-PLP',
+        },
+        bcomStagePlp: {
+          id: 'bcomStagePlp',
+          show: false,
+          scores: {},
+          displayName: 'Stage-PLP',
+        },
+        bcomDevPlp: {
+          id: 'bcomDevPlp',
+          show: false,
+          scores: {},
+          displayName: 'Dev-PLP',
+        },
+        bcomProdPip: {
+          id: 'bcomProdPip',
+          show: true,
+          scores: {},
+          displayName: 'Prod-PIP',
+        },
+        bcomStagePip: {
+          id: 'bcomStagePip',
+          show: false,
+          scores: {},
+          displayName: 'Stage-PIP',
+        },
+        bcomDevPip: {
+          id: 'bcomDevPip',
+          show: false,
+          scores: {},
+          displayName: 'Dev-PIP',
         }
       }
     }
@@ -113,7 +158,6 @@ class Home extends Component {
       if (this.state.websites[key].show) {
         if(!startTime){
           //  Show all points
-          console.log('show all');
           this.dbRefs[key].on("value", (snapshot) => this.handleSnapshot(key, snapshot))
         } else {
           this.dbRefs[key]
