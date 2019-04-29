@@ -16,21 +16,28 @@ class Home extends Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDataPointClick = this.handleDataPointClick.bind(this);
     this.handleMetricCheckBoxChange = this.handleMetricCheckBoxChange.bind(this);
+<<<<<<< HEAD
     this.handleStartDatePickerChange = this.handleStartDatePickerChange.bind(this);
     this.handleEndDatePickerChange = this.handleEndDatePickerChange.bind(this);
     this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
 
+=======
+    this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
+>>>>>>> e7229044be33a5b11753c47ce00d31dac2800968
 
     this.dbRefs = {
       bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
       bcomStage: firebase.database().ref('/performance/bcom-stage/scores'),
       bcomDev: firebase.database().ref('/performance/bcom-dev/scores'),
+      bcomUat: firebase.database().ref('/performance/bcom-uat/scores'),
       bcomProdPlp: firebase.database().ref('/performance/bcom-prod-plp/scores'),
       bcomStagePlp: firebase.database().ref('/performance/bcom-stage-plp/scores'),
       bcomDevPlp: firebase.database().ref('/performance/bcom-dev-plp/scores'),
+      bcomUatPlp: firebase.database().ref('/performance/bcom-uat-plp/scores'),
       bcomProdPip: firebase.database().ref('/performance/bcom-prod-pip/scores'),
       bcomStagePip: firebase.database().ref('/performance/bcom-stage-pip/scores'),
       bcomDevPip: firebase.database().ref('/performance/bcom-dev-pip/scores'),
+      bcomUatPip: firebase.database().ref('/performance/bcom-uat-pip/scores'),
     }
   
     this.state = {
@@ -110,6 +117,12 @@ class Home extends Component {
           scores: {},
           displayName: 'Dev',
         },
+        bcomUat: {
+          id: 'bcomUat',
+          show: false,
+          scores: {},
+          displayName: 'Uat',
+        },
         bcomProdPlp: {
           id: 'bcomProdPlp',
           show: true,
@@ -128,6 +141,12 @@ class Home extends Component {
           scores: {},
           displayName: 'Dev-PLP',
         },
+        bcomUatPlp: {
+          id: 'bcomUatPlp',
+          show: false,
+          scores: {},
+          displayName: 'Uat-PLP',
+        },
         bcomProdPip: {
           id: 'bcomProdPip',
           show: true,
@@ -145,6 +164,12 @@ class Home extends Component {
           show: false,
           scores: {},
           displayName: 'Dev-PIP',
+        },
+        bcomUatPip: {
+          id: 'bcomUatPip',
+          show: false,
+          scores: {},
+          displayName: 'Uat-PIP',
         }
       }
     }
@@ -154,7 +179,18 @@ class Home extends Component {
     this.updateFirebaseRefs(this.state.startAt);
   }
 
+<<<<<<< HEAD
   updateFirebaseRefs(startTime, endTime){
+=======
+  removeFirebaseListeners() {
+    Object.keys(this.dbRefs).forEach((key) => {
+      this.dbRefs[key].off();
+    })
+  }
+
+  updateFirebaseRefs(startTime){
+    this.removeFirebaseListeners();
+>>>>>>> e7229044be33a5b11753c47ce00d31dac2800968
     Object.keys(this.dbRefs).forEach((key) => {
       if (this.state.websites[key].show) {
         if(!startTime && !endTime){
