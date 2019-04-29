@@ -22,12 +22,15 @@ class Home extends Component {
       bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
       bcomStage: firebase.database().ref('/performance/bcom-stage/scores'),
       bcomDev: firebase.database().ref('/performance/bcom-dev/scores'),
+      bcomUat: firebase.database().ref('/performance/bcom-uat/scores'),
       bcomProdPlp: firebase.database().ref('/performance/bcom-prod-plp/scores'),
       bcomStagePlp: firebase.database().ref('/performance/bcom-stage-plp/scores'),
       bcomDevPlp: firebase.database().ref('/performance/bcom-dev-plp/scores'),
+      bcomUatPlp: firebase.database().ref('/performance/bcom-uat-plp/scores'),
       bcomProdPip: firebase.database().ref('/performance/bcom-prod-pip/scores'),
       bcomStagePip: firebase.database().ref('/performance/bcom-stage-pip/scores'),
       bcomDevPip: firebase.database().ref('/performance/bcom-dev-pip/scores'),
+      bcomUatPip: firebase.database().ref('/performance/bcom-uat-pip/scores'),
     }
   
     this.state = {
@@ -102,6 +105,12 @@ class Home extends Component {
           scores: {},
           displayName: 'Dev',
         },
+        bcomUat: {
+          id: 'bcomUat',
+          show: false,
+          scores: {},
+          displayName: 'Uat',
+        },
         bcomProdPlp: {
           id: 'bcomProdPlp',
           show: true,
@@ -120,6 +129,12 @@ class Home extends Component {
           scores: {},
           displayName: 'Dev-PLP',
         },
+        bcomUatPlp: {
+          id: 'bcomUatPlp',
+          show: false,
+          scores: {},
+          displayName: 'Uat-PLP',
+        },
         bcomProdPip: {
           id: 'bcomProdPip',
           show: true,
@@ -137,6 +152,12 @@ class Home extends Component {
           show: false,
           scores: {},
           displayName: 'Dev-PIP',
+        },
+        bcomUatPip: {
+          id: 'bcomUatPip',
+          show: false,
+          scores: {},
+          displayName: 'Uat-PIP',
         }
       }
     }
