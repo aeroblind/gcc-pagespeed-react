@@ -16,6 +16,10 @@ class Home extends Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDataPointClick = this.handleDataPointClick.bind(this);
     this.handleMetricCheckBoxChange = this.handleMetricCheckBoxChange.bind(this);
+    this.handleStartDatePickerChange = this.handleStartDatePickerChange.bind(this);
+    this.handleEndDatePickerChange = this.handleEndDatePickerChange.bind(this);
+    this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
+
 
     this.dbRefs = {
       bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
@@ -31,6 +35,12 @@ class Home extends Component {
   
     this.state = {
       startAt: this.getTimeMinusMinutes(15),
+      timeFormat: 'LTS',
+      dateRange: {
+        isActive: false,
+        start: moment(new Date).format(),
+        end: moment(new Date).format()
+      },
       metrics: {
         firstContentfulPaint:{
           displayName:'First Contentful Paint',
@@ -81,7 +91,6 @@ class Home extends Component {
           factor: 1000,
         }
       },
-      timeFormat: 'LTS',
       websites: {
         bcomProd: {
           id: 'bcomProd',
@@ -145,12 +154,18 @@ class Home extends Component {
     this.updateFirebaseRefs(this.state.startAt);
   }
 
-  updateFirebaseRefs(startTime){
+  updateFirebaseRefs(startTime, endTime){
     Object.keys(this.dbRefs).forEach((key) => {
       if (this.state.websites[key].show) {
-        if(!startTime){
+        if(!startTime && !endTime){
           //  Show all points
           this.dbRefs[key].on("value", (snapshot) => this.handleSnapshot(key, snapshot))
+        } else if (startTime && endTime){
+          this.dbRefs[key]
+          .orderByChild("fetchTime")
+          .startAt(startTime)
+          .endAt(endTime)
+          .once("value", (snapshot) => this.handleSnapshot(key, snapshot))
         } else {
           this.dbRefs[key]
           .orderByChild("fetchTime")
@@ -212,6 +227,37 @@ class Home extends Component {
     console.log(Object.entries(this.state.websites[id].scores)[index][1]);
   }
 
+  handleStartDatePickerChange(date) {
+    // console.log(moment(date).valueOf());
+    // console.log(moment.utc(date).format());
+    const cDateRange = Object.assign({}, this.state.dateRange);
+    cDateRange.start = moment.utc(date).format()
+    this.setState({
+      dateRange: cDateRange,
+    })
+  }
+
+  handleEndDatePickerChange(date) {
+    const cDateRange = Object.assign({}, this.state.dateRange);
+    cDateRange.end = moment.utc(date).format()
+    this.setState({
+      dateRange: cDateRange,
+    })
+  }
+
+  handleDateRangeChange(e) {
+    const cDateRange = Object.assign({}, this.state.dateRange);
+    cDateRange.isActive = e.target.checked;
+    this.setState({
+      dateRange: cDateRange,
+      timeFormat: 'lll',
+    })
+    if(e.target.checked){
+      console.log(moment.utc(this.state.dateRange.start).format('lll'));
+      this.updateFirebaseRefs(this.state.dateRange.start, this.state.dateRange.end)
+    }
+  }
+
   render() {
     return (
       <Display 
@@ -220,6 +266,9 @@ class Home extends Component {
         handleButtonClick={this.handleButtonClick}
         onDataPointClick={this.handleDataPointClick}
         handleMetricCheckBoxChange={this.handleMetricCheckBoxChange}
+        handleStartDatePickerChange={this.handleStartDatePickerChange}
+        handleEndDatePickerChange={this.handleEndDatePickerChange}
+        handleDateRangeChange={this.handleDateRangeChange}
       />
     )
   }
