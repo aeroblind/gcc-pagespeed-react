@@ -175,6 +175,12 @@ class Home extends Component {
     this.updateFirebaseRefs(this.state.startAt);
   }
 
+  removeFirebaseListeners() {
+    Object.keys(this.dbRefs).forEach((key) => {
+      this.dbRefs[key].off();
+    })
+  }
+
   updateFirebaseRefs(startTime, endTime){
     this.removeFirebaseListeners();
     Object.keys(this.dbRefs).forEach((key) => {
@@ -249,14 +255,18 @@ class Home extends Component {
     console.log(Object.entries(this.state.websites[id].scores)[index][1]);
   }
 
+  datePickerDidChange(dateRange){
+    if (this.state.dateRange.isActive) {
+      this.updateFirebaseRefs(dateRange.start, dateRange.end)
+    }
+  }
+
   handleStartDatePickerChange(date) {
-    // console.log(moment(date).valueOf());
-    // console.log(moment.utc(date).format());
     const cDateRange = Object.assign({}, this.state.dateRange);
     cDateRange.start = moment.utc(date).format()
     this.setState({
       dateRange: cDateRange,
-    })
+    }, this.datePickerDidChange(cDateRange))
   }
 
   handleEndDatePickerChange(date) {
@@ -264,7 +274,7 @@ class Home extends Component {
     cDateRange.end = moment.utc(date).format()
     this.setState({
       dateRange: cDateRange,
-    })
+    }, this.datePickerDidChange(cDateRange))
   }
 
   handleDateRangeChange(e) {
@@ -275,7 +285,7 @@ class Home extends Component {
       timeFormat: 'lll',
     })
     if(e.target.checked){
-      console.log(moment.utc(this.state.dateRange.start).format('lll'));
+      //console.log(moment.utc(this.state.dateRange.start).format('lll'));
       this.updateFirebaseRefs(this.state.dateRange.start, this.state.dateRange.end)
     }
   }
