@@ -4,22 +4,22 @@ import moment from 'moment';
 import Container from '../../components/styled/Container';
 import FlexBox from '../../components/styled/FlexBox';
 import Button from '../../components/styled/Button';
+import DatePicker from 'react-datepicker';
 
-const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handleButtonClick, onDataPointClick}) => {
+import "react-datepicker/dist/react-datepicker.css";
 
-  const { 
-    bcomProd,
-    bcomStage,
-    bcomDev,
-    bcomProdPlp,
-    bcomStagePlp,
-    bcomDevPlp,
-    bcomProdPip,
-    bcomStagePip,
-    bcomDevPip,
-  } = state.websites;
+const Display = ({
+  state,
+  handleCheckBoxChange,
+  handleMetricCheckBoxChange,
+  handleButtonClick,
+  onDataPointClick,
+  handleStartDatePickerChange,
+  handleEndDatePickerChange,
+  handleDateRangeChange
+}) => {
 
-  const { timeFormat, websites } = state;
+  const { timeFormat, websites, dateRange} = state;
 
   const options = {
     scales: {
@@ -127,6 +127,8 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
     };
   }
 
+ 
+
   const handleOnClick = (e) => {
     if (e.length === 0) return;
     const id = e[0]._chart.canvas.id;
@@ -140,16 +142,38 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
         <FlexBox overflow="auto">
             {createCheckboxes()}
         </FlexBox>
-      <Container padding={'0'}>
-        <FlexBox overflow="auto" padding={'20px 0 15px 0'}>
-          <Button id="15" margin={'0 10px 0 0'} onClick={handleButtonClick}>15min</Button>          
-          <Button id="30" margin={'0 10px 0 0'} onClick={handleButtonClick}>30min</Button>
-          <Button id="60" margin={'0 10px 0 0'} onClick={handleButtonClick}>1 Hour</Button>
-          <Button id="240" margin={'0 10px 0 0'} onClick={handleButtonClick}>4 Hours</Button>
-          <Button id="1440" margin={'0 10px 0 0'} onClick={handleButtonClick}>24 Hours</Button>
-          <Button id="all" margin={'0 10px 0 0'} onClick={handleButtonClick}>All</Button>
-        </FlexBox>
-      </Container>
+        <Container padding={'0'}>
+          <FlexBox overflow="auto" padding={'20px 0 15px 0'}>
+            <Button id="15" margin={'0 10px 0 0'} onClick={handleButtonClick}>15min</Button>          
+            <Button id="30" margin={'0 10px 0 0'} onClick={handleButtonClick}>30min</Button>
+            <Button id="60" margin={'0 10px 0 0'} onClick={handleButtonClick}>1 Hour</Button>
+            <Button id="240" margin={'0 10px 0 0'} onClick={handleButtonClick}>4 Hours</Button>
+            <Button id="1440" margin={'0 10px 0 0'} onClick={handleButtonClick}>24 Hours</Button>
+            <Button id="all" margin={'0 10px 0 0'} onClick={handleButtonClick}>All</Button>
+          </FlexBox>
+        </Container>
+        <Container>
+          <div>
+            <input onChange={handleDateRangeChange} id="dateRangeCheckbox" type="checkbox" checked={dateRange.isActive} />
+            <label htmlFor="dateRangeCheckbox">Date Range</label>
+            <Container>
+                <FlexBox>
+                  <div>Start:</div>
+                  <DatePicker
+                    selected={new Date(dateRange.start)}
+                    onChange={handleStartDatePickerChange}
+                  />
+                </FlexBox>
+                <FlexBox>
+                  <div>End:</div>
+                  <DatePicker
+                    selected={new Date(dateRange.end)}
+                    onChange={handleEndDatePickerChange}
+                  />
+                </FlexBox>
+            </Container>
+          </div>
+        </Container>
       </Container>
       <div>
         {Object.entries(websites).map(([key, website], index) => {

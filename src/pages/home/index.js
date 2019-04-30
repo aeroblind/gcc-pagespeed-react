@@ -16,6 +16,9 @@ class Home extends Component {
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDataPointClick = this.handleDataPointClick.bind(this);
     this.handleMetricCheckBoxChange = this.handleMetricCheckBoxChange.bind(this);
+    this.handleStartDatePickerChange = this.handleStartDatePickerChange.bind(this);
+    this.handleEndDatePickerChange = this.handleEndDatePickerChange.bind(this);
+    this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
     this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
 
     this.dbRefs = {
@@ -35,6 +38,12 @@ class Home extends Component {
   
     this.state = {
       startAt: this.getTimeMinusMinutes(15),
+      timeFormat: 'LTS',
+      dateRange: {
+        isActive: false,
+        start: moment(new Date).format(),
+        end: moment(new Date).format()
+      },
       metrics: {
         firstContentfulPaint:{
           displayName:'First Contentful Paint',
@@ -85,7 +94,6 @@ class Home extends Component {
           factor: 1000,
         }
       },
-      timeFormat: 'LTS',
       websites: {
         bcomProd: {
           id: 'bcomProd',
@@ -173,13 +181,19 @@ class Home extends Component {
     })
   }
 
-  updateFirebaseRefs(startTime){
+  updateFirebaseRefs(startTime, endTime){
     this.removeFirebaseListeners();
     Object.keys(this.dbRefs).forEach((key) => {
       if (this.state.websites[key].show) {
-        if(!startTime){
+        if(!startTime && !endTime){
           //  Show all points
           this.dbRefs[key].on("value", (snapshot) => this.handleSnapshot(key, snapshot))
+        } else if (startTime && endTime){
+          this.dbRefs[key]
+          .orderByChild("fetchTime")
+          .startAt(startTime)
+          .endAt(endTime)
+          .once("value", (snapshot) => this.handleSnapshot(key, snapshot))
         } else {
           this.dbRefs[key]
           .orderByChild("fetchTime")
@@ -241,6 +255,41 @@ class Home extends Component {
     console.log(Object.entries(this.state.websites[id].scores)[index][1]);
   }
 
+  datePickerDidChange(dateRange){
+    if (this.state.dateRange.isActive) {
+      this.updateFirebaseRefs(dateRange.start, dateRange.end)
+    }
+  }
+
+  handleStartDatePickerChange(date) {
+    const cDateRange = Object.assign({}, this.state.dateRange);
+    cDateRange.start = moment.utc(date).format()
+    this.setState({
+      dateRange: cDateRange,
+    }, this.datePickerDidChange(cDateRange))
+  }
+
+  handleEndDatePickerChange(date) {
+    const cDateRange = Object.assign({}, this.state.dateRange);
+    cDateRange.end = moment.utc(date).format()
+    this.setState({
+      dateRange: cDateRange,
+    }, this.datePickerDidChange(cDateRange))
+  }
+
+  handleDateRangeChange(e) {
+    const cDateRange = Object.assign({}, this.state.dateRange);
+    cDateRange.isActive = e.target.checked;
+    this.setState({
+      dateRange: cDateRange,
+      timeFormat: 'lll',
+    })
+    if(e.target.checked){
+      //console.log(moment.utc(this.state.dateRange.start).format('lll'));
+      this.updateFirebaseRefs(this.state.dateRange.start, this.state.dateRange.end)
+    }
+  }
+
   render() {
     return (
       <Display 
@@ -249,6 +298,9 @@ class Home extends Component {
         handleButtonClick={this.handleButtonClick}
         onDataPointClick={this.handleDataPointClick}
         handleMetricCheckBoxChange={this.handleMetricCheckBoxChange}
+        handleStartDatePickerChange={this.handleStartDatePickerChange}
+        handleEndDatePickerChange={this.handleEndDatePickerChange}
+        handleDateRangeChange={this.handleDateRangeChange}
       />
     )
   }
