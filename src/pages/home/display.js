@@ -135,9 +135,9 @@ const Display = ({state, handleCheckBoxChange, handleMetricCheckBoxChange, handl
   }
 
   return (
-    <div style={{padding: '30px 50px 30px 50px'}}>
+    <div style={{padding: '2em 1em 2em 1em'}}>
       <Container boxShadow>
-        <FlexBox>
+        <FlexBox overflow="auto">
             {createCheckboxes()}
         </FlexBox>
       <Container padding={'0'}>
