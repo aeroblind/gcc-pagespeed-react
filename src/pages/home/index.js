@@ -26,6 +26,7 @@ class Home extends Component {
       bcomStage: firebase.database().ref('/performance/bcom-stage/scores'),
       bcomDev: firebase.database().ref('/performance/bcom-dev/scores'),
       bcomUat: firebase.database().ref('/performance/bcom-uat/scores'),
+      bcomUatNoTags: firebase.database().ref('/performance/bcom-uat-no-tags/scores'),
       bcomProdPlp: firebase.database().ref('/performance/bcom-prod-plp/scores'),
       bcomStagePlp: firebase.database().ref('/performance/bcom-stage-plp/scores'),
       bcomDevPlp: firebase.database().ref('/performance/bcom-dev-plp/scores'),
@@ -118,6 +119,12 @@ class Home extends Component {
           show: false,
           scores: {},
           displayName: 'Uat',
+        },
+        bcomUatNoTags: {
+          id: 'bcomUatNoTags',
+          show: false,
+          scores: {},
+          displayName: 'Uat-NoTags',
         },
         bcomProdPlp: {
           id: 'bcomProdPlp',
