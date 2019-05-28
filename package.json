@@ -9,7 +9,7 @@
     "start": "node server.js",
     "start:dev": "npm run devServer",
     "devServer": "webpack-dev-server --config webpack.config.js --open --hot --inline",
-    "set": "gcloud config set project gcc-pagespeed-react",
+    "set": "gcloud config set project mobile-performance-seo",
     "deploy": "npm run set && gcloud app deploy --quiet"
   },
   "dependencies": {
