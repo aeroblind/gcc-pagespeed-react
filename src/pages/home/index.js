@@ -12,33 +12,15 @@ class Home extends Component {
 
     this.handleSnapshot = this.handleSnapshot.bind(this);
     this.updateFirebaseRefs = this.updateFirebaseRefs.bind(this);
-    this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-    this.handleDataPointClick = this.handleDataPointClick.bind(this);
-    this.handleMetricCheckBoxChange = this.handleMetricCheckBoxChange.bind(this);
-    this.handleStartDatePickerChange = this.handleStartDatePickerChange.bind(this);
-    this.handleEndDatePickerChange = this.handleEndDatePickerChange.bind(this);
-    this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
     this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+    this.handleTimeChange = this.handleTimeChange.bind(this);
+    this.timeIsSelected = this.timeIsSelected.bind(this);
+    this.updateWebsiteScore = this.updateWebsiteScore.bind(this);
 
-    this.dbRefs = {
-      bcomProd: firebase.database().ref('/performance/bcom-prod/scores'),
-      bcomStage: firebase.database().ref('/performance/bcom-stage/scores'),
-      bcomDev: firebase.database().ref('/performance/bcom-dev/scores'),
-      bcomUat: firebase.database().ref('/performance/bcom-uat/scores'),
-      bcomUatNoTags: firebase.database().ref('/performance/bcom-uat-no-tags/scores'),
-      bcomProdPlp: firebase.database().ref('/performance/bcom-prod-plp/scores'),
-      bcomStagePlp: firebase.database().ref('/performance/bcom-stage-plp/scores'),
-      bcomDevPlp: firebase.database().ref('/performance/bcom-dev-plp/scores'),
-      bcomUatPlp: firebase.database().ref('/performance/bcom-uat-plp/scores'),
-      bcomProdPip: firebase.database().ref('/performance/bcom-prod-pip/scores'),
-      bcomStagePip: firebase.database().ref('/performance/bcom-stage-pip/scores'),
-      bcomDevPip: firebase.database().ref('/performance/bcom-dev-pip/scores'),
-      bcomUatPip: firebase.database().ref('/performance/bcom-uat-pip/scores'),
-    }
-  
     this.state = {
       startAt: this.getTimeMinusMinutes(15),
+      selectedDuration: 15,
       timeFormat: 'LTS',
       dateRange: {
         isActive: false,
@@ -96,85 +78,279 @@ class Home extends Component {
         }
       },
       websites: {
-        bcomProd: {
-          id: 'bcomProd',
+        production: {
+          id: 'production',
+          displayName: 'PROD',
           show: true,
-          scores: {},
-          displayName: 'Prod',
+          websites: [
+            {
+              id: 'bcomProd',
+              show: true,
+              score: 0,
+              displayName: 'Home',
+              url: 'www.blinds.com',
+              dbRef: 'bcom-prod',
+            },
+            {
+              id: 'bcomProdPlp',
+              show: true,
+              score: 0,
+              displayName: 'PLP',
+              url: 'www.blinds.com/c/wood-blinds/40',
+              dbRef: 'bcom-prod-plp',
+            },
+            {
+              id: 'bcomProdPip',
+              show: true,
+              score: 0,
+              displayName: 'PIP',
+              url: 'www.blinds.com/p/blindscom-2-premium-wood-blind/503426',
+              dbRef: 'bcom-prod-pip',
+            },
+          ]
         },
-        bcomStage: {
-          id: 'bcomStage',
+        stage: {
+          id: 'stage',
+          displayName: 'STAGE',
           show: false,
-          scores: {},
-          displayName: 'Stage',
+          websites: [
+            {
+              id: 'bcomStage',
+              show: true,
+              score: 0,
+              displayName: 'Home',
+              url: 'stage.autobahn.blinds.com',
+              dbRef: 'bcom-stage',
+            },
+            {
+              id: 'bcomStagePlp',
+              show: true,
+              score: 0,
+              displayName: 'PLP',
+              url: 'stage.autobahn.blinds.com/c/wood-blinds/40',
+              dbRef: 'bcom-stage-plp',
+            },
+            {
+              id: 'bcomStagePip',
+              show: true,
+              score: 0,
+              displayName: 'PIP',
+              url: 'stage.autobahn.blinds.com/p/blindscom-2-premium-wood-blind/503426',
+              dbRef: 'bcom-stage-pip',
+            },
+          ]
         },
-        bcomDev: {
-          id: 'bcomDev',
+        development: {
+          id: 'development',
+          displayName: 'DEV',
           show: false,
-          scores: {},
-          displayName: 'Dev',
+          websites: [
+            {
+              id: 'bcomDev',
+              show: true,
+              score: 0,
+              displayName: 'Home',
+              url: 'dev.autobahn.blinds.com',
+              dbRef: 'bcom-dev',
+            },
+            {
+              id: 'bcomDevPlp',
+              show: true,
+              score: 0,
+              displayName: 'PLP',
+              url: 'dev.autobahn.blinds.com/c/wood-blinds/40',
+              dbRef: 'bcom-dev-plp',
+            },
+            {
+              id: 'bcomDevPip',
+              show: true,
+              score: 0,
+              displayName: 'PIP',
+              url: 'dev.autobahn.blinds.com/p/blindscom-2-premium-wood-blind/503426',
+              dbRef: 'bcom-dev-pip',
+            },
+          ]
         },
-        bcomUat: {
-          id: 'bcomUat',
+        lowes: {
+          id: 'lowes',
+          displayName: "LOWE'S",
           show: false,
-          scores: {},
-          displayName: 'Uat',
+          websites: [
+            {
+              id: 'lowes-home',
+              score: 0,
+              show: true,
+              displayName: 'Home',
+              url: 'blinds.lowes.com/',
+              dbRef: 'lowes-home',
+            },
+            {
+              id: 'lowes-plp',
+              score: 0,
+              show: true,
+              displayName: 'PLP',
+              url: 'blinds.lowes.com/c/Custom-Wood-Blinds?limited=0&page=1&pageSize=18&sortCode=-Most%20Popular',
+              dbRef: 'lowes-plp',
+            },
+            {
+              id: 'lowes-pip',
+              show: true,
+              score: 0,
+              displayName: 'PIP',
+              url: 'blinds.lowes.com/product/detail.action?sku=Levolor-Real-Wood-Blinds&groupName=Wood-Blinds&xdata-width=24&xdata-height=36',
+              dbRef: 'lowes-pip',
+            },
+          ]
         },
-        bcomUatNoTags: {
-          id: 'bcomUatNoTags',
+        selectBlinds: {
+          id: 'selectBlinds',
+          displayName: 'SELECT BLINDS',
           show: false,
-          scores: {},
-          displayName: 'Uat-NoTags',
+          websites: [
+            {
+              id: 'select-home',
+              score: 0,
+              show: true,
+              displayName: 'Home',
+              url: 'www.selectblinds.com',
+              dbRef: 'select-home',
+            },
+            {
+              id: 'select-plp',
+              score: 0,
+              show: true,
+              displayName: 'PLP',
+              url: 'www.selectblinds.com/wood-blinds.html',
+              dbRef: 'select-plp',
+            },
+            {
+              id: 'select-pip',
+              show: true,
+              score: 0,
+              displayName: 'PIP',
+              url: 'www.selectblinds.com/woodblinds/2-inch-premier-wood-blind.html',
+              dbRef: 'select-pip',
+            },
+          ]
         },
-        bcomProdPlp: {
-          id: 'bcomProdPlp',
-          show: true,
-          scores: {},
-          displayName: 'Prod-PLP',
-        },
-        bcomStagePlp: {
-          id: 'bcomStagePlp',
+        budgetBlinds: {
+          id: 'budgetBlinds',
+          displayName: 'BUDGET BLINDS',
           show: false,
-          scores: {},
-          displayName: 'Stage-PLP',
+          websites: [
+            {
+              id: 'bb-home',
+              score: 0,
+              show: true,
+              displayName: 'Home',
+              url: 'budgetblinds.com',
+              dbRef: 'bb-home',
+            },
+            {
+              id: 'bb-plp',
+              score: 0,
+              show: true,
+              displayName: 'PLP',
+              url: 'budgetblinds.com/our-products/blinds/wood-blinds/',
+              dbRef: 'bb-plp',
+            }
+          ]
         },
-        bcomDevPlp: {
-          id: 'bcomDevPlp',
+        blindsGalore: {
+          id: 'blindsGalore',
+          displayName: 'BLINDS GALORE',
           show: false,
-          scores: {},
-          displayName: 'Dev-PLP',
+          websites: [
+            {
+              id: 'bg-home',
+              score: 0,
+              show: true,
+              displayName: 'Home',
+              url: 'www.blindsgalore.com',
+              dbRef: 'bg-home',
+            },
+            {
+              id: 'bg-plp',
+              score: 0,
+              show: true,
+              displayName: 'PLP',
+              url: 'www.blindsgalore.com/wood-blinds',
+              dbRef: 'bg-plp',
+            },
+            {
+              id: 'bg-pip',
+              score: 0,
+              show: true,
+              displayName: 'PIP',
+              url: 'www.blindsgalore.com/product/702199/blindsgalore-hardwood-blinds-slats',
+              dbRef: 'bg-pip',
+            }
+          ]
         },
-        bcomUatPlp: {
-          id: 'bcomUatPlp',
+        stevesBlinds: {
+          id: 'stevesBlinds',
+          displayName: "STEVE'S BLINDS",
           show: false,
-          scores: {},
-          displayName: 'Uat-PLP',
+          websites: [
+            {
+              id: 'steves-home',
+              score: 0,
+              show: true,
+              displayName: 'Home',
+              url: 'www.stevesblindsandwallpaper.com',
+              dbRef: 'bg-home',
+            },
+            {
+              id: 'steves-plp',
+              score: 0,
+              show: true,
+              displayName: 'PLP',
+              url: 'www.stevesblindsandwallpaper.com/blinds/search/?brand=steves-exclusive-collection&product_type=wood-blinds',
+              dbRef: 'bg-plp',
+            },
+            {
+              id: 'steves-pip',
+              score: 0,
+              show: true,
+              displayName: 'PIP',
+              url: 'www.stevesblindsandwallpaper.com/blinds/product/6952-steves-good-2-wood-blind',
+              dbRef: 'steves-pip',
+            }
+          ]
         },
-        bcomProdPip: {
-          id: 'bcomProdPip',
-          show: true,
-          scores: {},
-          displayName: 'Prod-PIP',
-        },
-        bcomStagePip: {
-          id: 'bcomStagePip',
+        blindster: {
+          id: 'blindster',
+          displayName: 'BLINDSTER',
           show: false,
-          scores: {},
-          displayName: 'Stage-PIP',
+          websites: [
+            {
+              id: 'blindster-home',
+              score: 0,
+              show: true,
+              displayName: 'Home',
+              url: 'https://www.blindster.com',
+              dbRef: 'blindster-home',
+            },
+            {
+              id: 'blindster-plp',
+              score: 0,
+              show: true,
+              displayName: 'PLP',
+              url: 'https://www.blindster.com/wood-blinds/',
+              dbRef: 'blindster-plp',
+            },
+            {
+              id: 'blindster-pip',
+              score: 0,
+              show: true,
+              displayName: 'PIP',
+              url: 'https://www.blindster.com/wood-blinds/2-inch-wood-blinds/',
+              dbRef: 'blindster-pip',
+            }
+          ]
         },
-        bcomDevPip: {
-          id: 'bcomDevPip',
-          show: false,
-          scores: {},
-          displayName: 'Dev-PIP',
-        },
-        bcomUatPip: {
-          id: 'bcomUatPip',
-          show: false,
-          scores: {},
-          displayName: 'Uat-PIP',
-        }
-      }
+      },
+      dbRefs: [],
     }
   }
 
@@ -183,119 +359,84 @@ class Home extends Component {
   }
 
   removeFirebaseListeners() {
-    Object.keys(this.dbRefs).forEach((key) => {
-      this.dbRefs[key].off();
+    this.state.dbRefs.map(dbRef => {
+      dbRef.off();
     })
   }
 
-  updateFirebaseRefs(startTime, endTime){
+  updateFirebaseRefs(startTime){
     this.removeFirebaseListeners();
-    Object.keys(this.dbRefs).forEach((key) => {
-      if (this.state.websites[key].show) {
-        if(!startTime && !endTime){
-          //  Show all points
-          this.dbRefs[key].on("value", (snapshot) => this.handleSnapshot(key, snapshot))
-        } else if (startTime && endTime){
-          this.dbRefs[key]
-          .orderByChild("fetchTime")
-          .startAt(startTime)
-          .endAt(endTime)
-          .once("value", (snapshot) => this.handleSnapshot(key, snapshot))
-        } else {
-          this.dbRefs[key]
-          .orderByChild("fetchTime")
-          .startAt(startTime)
-          .on("value", (snapshot) => this.handleSnapshot(key, snapshot))
-        }
+    const { websites } = this.state;
+    Object.keys(websites).forEach((key) => {
+      if (websites[key].show) {
+        websites[key].websites.map(website => {
+          const dbRef = firebase.database().ref(`/performance/${website.dbRef}/scores`)
+          this.setState({
+            dbRefs: [...this.state.dbRefs, dbRef],
+          });
+          dbRef
+            .orderByChild("fetchTime")
+            .startAt(startTime)
+            .once("value", (snapshot) => this.handleSnapshot(key, website.id, snapshot))
+        })
       }
     })
   }
 
-  handleSnapshot(key,snapshot) {
-    var scores = snapshot.val() || {};
-    let newObj = Object.assign({}, this.state.websites)
-    newObj[key].scores = scores;
+  calculateMedian(values) {
+    if (values.length === 0) return 0;
+    values.sort(function(a,b){
+      return a-b;
+    });
+    var half = Math.floor(values.length / 2);
+    if (values.length % 2)
+      return values[half];
+    return (values[half - 1] + values[half]) / 2.0;
+  }
+
+  updateWebsiteScore(env, id, score) {
+    let cWebsites = Object.assign({}, this.state.websites)
+    const index = cWebsites[env].websites.findIndex(website => website.id === id);
+    cWebsites[env].websites[index].score = score;
     this.setState({
-      websites: newObj
+      websites: cWebsites
     })
   }
 
-  handleCheckBoxChange(e) {
-    const id = e.target.id;
-    let newObj = Object.assign({}, this.state.websites)
-    newObj[id].show = e.target.checked;
-    this.setState({
-      websites: newObj
-    }, this.updateFirebaseRefs(this.state.startAt));
-  }
-
-  handleMetricCheckBoxChange(e) {
-    const id = e.target.id;
-    let newObj = Object.assign({}, this.state.metrics)
-    newObj[id].show = e.target.checked;
-    this.setState({
-      metrics: newObj
+  handleSnapshot(key, id, snapshot) {
+    var snapshotValues = snapshot.val() || {};
+    var scores = [];
+    Object.keys(snapshotValues).forEach(key => {
+      scores.push(snapshotValues[key].score);
     });
-  }
-
-  handleButtonClick(e) {
-    const id = e.target.id;
-    var startAtTime = '';
-    var timeFormat = 'LTS';
-    if (id === 'all') {
-      startAtTime = null;
-      timeFormat = 'lll';
-    } else {
-      startAtTime = this.getTimeMinusMinutes(id);
-    }
-    this.setState({
-      startAt: startAtTime,
-      timeFormat,
-    }, this.updateFirebaseRefs(startAtTime))
+    var median = this.calculateMedian(scores);
+    var percentage = Math.floor(median * 100);
+    this.updateWebsiteScore(key, id, percentage);
+    
   }
 
   getTimeMinusMinutes(minutes) {
     return moment.utc().subtract(minutes, 'minutes').format();
   }
 
-  handleDataPointClick(id, index) {
-    console.log(Object.entries(this.state.websites[id].scores)[index][1]);
-  }
-
-  datePickerDidChange(dateRange){
-    if (this.state.dateRange.isActive) {
-      this.updateFirebaseRefs(dateRange.start, dateRange.end)
-    }
-  }
-
-  handleStartDatePickerChange(date) {
-    const cDateRange = Object.assign({}, this.state.dateRange);
-    cDateRange.start = moment.utc(date).format()
+  handleVisibilityChange(id, show) {
+    const cWebsites = Object.assign({}, this.state.websites);
+    cWebsites[id].show = show;
     this.setState({
-      dateRange: cDateRange,
-    }, this.datePickerDidChange(cDateRange))
+      websites: cWebsites,
+    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(this.state.selectedDuration)))
   }
 
-  handleEndDatePickerChange(date) {
-    const cDateRange = Object.assign({}, this.state.dateRange);
-    cDateRange.end = moment.utc(date).format()
+  handleTimeChange(e) {
+    const durationInMinutes = parseInt(e.currentTarget.getAttribute("value"), 10);
     this.setState({
-      dateRange: cDateRange,
-    }, this.datePickerDidChange(cDateRange))
+      selectedDuration: durationInMinutes,
+    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(durationInMinutes)))
   }
 
-  handleDateRangeChange(e) {
-    const cDateRange = Object.assign({}, this.state.dateRange);
-    cDateRange.isActive = e.target.checked;
-    this.setState({
-      dateRange: cDateRange,
-      timeFormat: 'lll',
-    })
-    if(e.target.checked){
-      //console.log(moment.utc(this.state.dateRange.start).format('lll'));
-      this.updateFirebaseRefs(this.state.dateRange.start, this.state.dateRange.end)
-    }
-  }
+  timeIsSelected(time) {
+    return time === this.state.selectedDuration;
+  } 
 
   render() {
     return (
@@ -308,6 +449,9 @@ class Home extends Component {
         handleStartDatePickerChange={this.handleStartDatePickerChange}
         handleEndDatePickerChange={this.handleEndDatePickerChange}
         handleDateRangeChange={this.handleDateRangeChange}
+        handleVisibilityChange={this.handleVisibilityChange}
+        handleTimeChange={this.handleTimeChange}
+        timeIsSelected={this.timeIsSelected}
       />
     )
   }
