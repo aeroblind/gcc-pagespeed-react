@@ -112,6 +112,38 @@ class Home extends Component {
             },
           ]
         },
+        prodNoTags: {
+          id: 'production-no-tags',
+          displayName: 'BLINDS.COM - NO TAGS (USEDTM=FALSE)',
+          dev: true,
+          show: true,
+          websites: [
+            {
+              id: 'bcomProd',
+              show: true,
+              score: 0,
+              displayName: 'Home',
+              url: 'www.blinds.com/?usedtm=false',
+              dbRef: 'bcom-prod-no-tags',
+            },
+            {
+              id: 'bcomProdPlp',
+              show: true,
+              score: 0,
+              displayName: 'PLP',
+              url: 'www.blinds.com/c/wood-blinds/54/?usedtm=false',
+              dbRef: 'bcom-prod-plp-no-tags',
+            },
+            {
+              id: 'bcomProdPip',
+              show: true,
+              score: 0,
+              displayName: 'PIP',
+              url: 'www.blinds.com/p/blindscom-2-premium-wood-blind/503426/?usedtm=false',
+              dbRef: 'bcom-prod-pip-no-tags',
+            },
+          ]
+        },
         stage: {
           id: 'stage',
           displayName: 'BLINDS.COM - STAGE',
@@ -450,7 +482,6 @@ class Home extends Component {
   } 
 
   handleDevButtonClick(e) {
-    console.log('handleDev')
     this.setState({
       devMode: !this.state.devMode,
     })
