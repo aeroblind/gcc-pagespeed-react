@@ -14,13 +14,17 @@ const Display = ({
   handleVisibilityChange,
   handleTimeChange,
   timeIsSelected,
+  handleDevButtonClick
 }) => {
 
-  const { websites } = state;
+  const { websites, devMode } = state;
 
   return (
     <div>
-      <NavBar title="GCC Pagespeed Insights"/>
+      <NavBar title="GCC Pagespeed Insights"
+        devMode={devMode}
+        handleDevButtonClick={handleDevButtonClick}  
+      />
       <Container padding="0px">
         <FlexBox overflowX="scroll" padding="0 0 5px 0">
           <TimeOption display="15m" value={15} onClick={handleTimeChange} selected={timeIsSelected(15)}/>
@@ -31,16 +35,19 @@ const Display = ({
         </FlexBox>
         <Container padding="0px">
           {Object.keys(websites).map((key, index) => {
-              return (
-                <EnvironmentSection
-                  key={index}
-                  show={websites[key].show}
-                  id={websites[key].id}
-                  title={websites[key].displayName}
-                  websites={websites[key].websites}
-                  handleVisibilityChange={handleVisibilityChange}
-                />
-              )
+              if (devMode || (!devMode && websites[key].dev === false)) {
+                return (
+                  <EnvironmentSection
+                    key={index}
+                    show={websites[key].show}
+                    id={websites[key].id}
+                    title={websites[key].displayName}
+                    websites={websites[key].websites}
+                    handleVisibilityChange={handleVisibilityChange}
+                  />
+                )
+              }
+      
             })
           }
         </Container>

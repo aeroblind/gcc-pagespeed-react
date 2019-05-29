@@ -17,8 +17,10 @@ class Home extends Component {
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.timeIsSelected = this.timeIsSelected.bind(this);
     this.updateWebsiteScore = this.updateWebsiteScore.bind(this);
+    this.handleDevButtonClick = this.handleDevButtonClick.bind(this);
 
     this.state = {
+      devMode: false,
       startAt: this.getTimeMinusMinutes(15),
       selectedDuration: 15,
       timeFormat: 'LTS',
@@ -80,7 +82,8 @@ class Home extends Component {
       websites: {
         production: {
           id: 'production',
-          displayName: 'PROD',
+          displayName: 'BLINDS.COM',
+          dev: false,
           show: true,
           websites: [
             {
@@ -111,7 +114,8 @@ class Home extends Component {
         },
         stage: {
           id: 'stage',
-          displayName: 'STAGE',
+          displayName: 'BLINDS.COM - STAGE',
+          dev: true,
           show: false,
           websites: [
             {
@@ -142,7 +146,8 @@ class Home extends Component {
         },
         development: {
           id: 'development',
-          displayName: 'DEV',
+          displayName: 'BLINDS.COM - DEV',
+          dev: true,
           show: false,
           websites: [
             {
@@ -174,6 +179,7 @@ class Home extends Component {
         lowes: {
           id: 'lowes',
           displayName: "LOWE'S",
+          dev: false,
           show: false,
           websites: [
             {
@@ -205,6 +211,7 @@ class Home extends Component {
         selectBlinds: {
           id: 'selectBlinds',
           displayName: 'SELECT BLINDS',
+          dev: false,
           show: false,
           websites: [
             {
@@ -236,6 +243,7 @@ class Home extends Component {
         budgetBlinds: {
           id: 'budgetBlinds',
           displayName: 'BUDGET BLINDS',
+          dev: false,
           show: false,
           websites: [
             {
@@ -259,6 +267,7 @@ class Home extends Component {
         blindsGalore: {
           id: 'blindsGalore',
           displayName: 'BLINDS GALORE',
+          dev: false,
           show: false,
           websites: [
             {
@@ -290,6 +299,7 @@ class Home extends Component {
         stevesBlinds: {
           id: 'stevesBlinds',
           displayName: "STEVE'S BLINDS",
+          dev: false,
           show: false,
           websites: [
             {
@@ -321,6 +331,7 @@ class Home extends Component {
         blindster: {
           id: 'blindster',
           displayName: 'BLINDSTER',
+          dev: false,
           show: false,
           websites: [
             {
@@ -438,20 +449,21 @@ class Home extends Component {
     return time === this.state.selectedDuration;
   } 
 
+  handleDevButtonClick(e) {
+    console.log('handleDev')
+    this.setState({
+      devMode: !this.state.devMode,
+    })
+  }
+
   render() {
     return (
       <Display 
         state={this.state} 
-        handleCheckBoxChange={this.handleCheckBoxChange}
-        handleButtonClick={this.handleButtonClick}
-        onDataPointClick={this.handleDataPointClick}
-        handleMetricCheckBoxChange={this.handleMetricCheckBoxChange}
-        handleStartDatePickerChange={this.handleStartDatePickerChange}
-        handleEndDatePickerChange={this.handleEndDatePickerChange}
-        handleDateRangeChange={this.handleDateRangeChange}
         handleVisibilityChange={this.handleVisibilityChange}
         handleTimeChange={this.handleTimeChange}
         timeIsSelected={this.timeIsSelected}
+        handleDevButtonClick={this.handleDevButtonClick}
       />
     )
   }
