@@ -56,6 +56,7 @@ const EnvironmentSection = ({ id, title, show, websites = [], handleVisibilityCh
                     title={website.displayName}
                     score={website.score}
                     url={website.url}
+                    dbRef={website.dbRef}
                   />
                 )
               })}

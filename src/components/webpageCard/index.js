@@ -20,7 +20,7 @@ const getPerformanceColor = (score) => {
   }
 } 
 
-const WebPageCard = ({title, score, url}) => {
+const WebPageCard = ({title, score, url, dbRef}) => {
   return (
       <FlexBox
         flexDirection="column"
@@ -51,13 +51,14 @@ const WebPageCard = ({title, score, url}) => {
         </FlexBox>
         <FlexBox
           flexGrow={0}
-          justifyContent="center"
+          justifyContent="space-evenly"
           alignItems="center"
           color="darkGray"
           fontSize="12px"
           padding="5px"
         >
           <a href={`https://${url}`} target="_blank">Link</a>
+          <a href={`/sites/${dbRef}/`} target="_blank">Stream</a>
         </FlexBox>
       </FlexBox>
   )

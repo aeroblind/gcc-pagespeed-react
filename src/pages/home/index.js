@@ -21,7 +21,6 @@ class Home extends Component {
 
     this.state = {
       devMode: false,
-      startAt: this.getTimeMinusMinutes(15),
       selectedDuration: 15,
       timeFormat: 'LTS',
       dateRange: {
@@ -83,6 +82,7 @@ class Home extends Component {
         production: {
           id: 'production',
           displayName: 'BLINDS.COM',
+          isGcc: true,
           dev: false,
           show: true,
           websites: [
@@ -113,10 +113,11 @@ class Home extends Component {
           ]
         },
         prodNoTags: {
-          id: 'production-no-tags',
+          id: 'prodNoTags',
           displayName: 'BLINDS.COM - NO TAGS (USEDTM=FALSE)',
           dev: true,
           show: true,
+          isGcc: true,
           websites: [
             {
               id: 'bcomProd',
@@ -149,6 +150,7 @@ class Home extends Component {
           displayName: 'BLINDS.COM - STAGE',
           dev: true,
           show: false,
+          isGcc: true,
           websites: [
             {
               id: 'bcomStage',
@@ -181,6 +183,7 @@ class Home extends Component {
           displayName: 'BLINDS.COM - DEV',
           dev: true,
           show: false,
+          isGcc: true,
           websites: [
             {
               id: 'bcomDev',
@@ -210,9 +213,10 @@ class Home extends Component {
         },
         lowes: {
           id: 'lowes',
-          displayName: "LOWE'S",
+          displayName: "LOWE'S*",
           dev: false,
           show: false,
+          isGcc: false,
           websites: [
             {
               id: 'lowes-home',
@@ -242,9 +246,10 @@ class Home extends Component {
         },
         selectBlinds: {
           id: 'selectBlinds',
-          displayName: 'SELECT BLINDS',
+          displayName: 'SELECT BLINDS*',
           dev: false,
           show: false,
+          isGcc: false,
           websites: [
             {
               id: 'select-home',
@@ -274,9 +279,10 @@ class Home extends Component {
         },
         budgetBlinds: {
           id: 'budgetBlinds',
-          displayName: 'BUDGET BLINDS',
+          displayName: 'BUDGET BLINDS*',
           dev: false,
           show: false,
+          isGcc: false,
           websites: [
             {
               id: 'bb-home',
@@ -298,9 +304,10 @@ class Home extends Component {
         },
         blindsGalore: {
           id: 'blindsGalore',
-          displayName: 'BLINDS GALORE',
+          displayName: 'BLINDS GALORE*',
           dev: false,
           show: false,
+          isGcc: false,
           websites: [
             {
               id: 'bg-home',
@@ -330,9 +337,10 @@ class Home extends Component {
         },
         stevesBlinds: {
           id: 'stevesBlinds',
-          displayName: "STEVE'S BLINDS",
+          displayName: "STEVE'S BLINDS*",
           dev: false,
           show: false,
+          isGcc: false,
           websites: [
             {
               id: 'steves-home',
@@ -362,9 +370,10 @@ class Home extends Component {
         },
         blindster: {
           id: 'blindster',
-          displayName: 'BLINDSTER',
+          displayName: 'BLINDSTER*',
           dev: false,
           show: false,
+          isGcc: false,
           websites: [
             {
               id: 'blindster-home',
@@ -398,7 +407,7 @@ class Home extends Component {
   }
 
   componentDidMount(){
-    this.updateFirebaseRefs(this.state.startAt);
+    this.updateFirebaseRefs(this.state.selectedDuration);
   }
 
   removeFirebaseListeners() {
@@ -407,12 +416,17 @@ class Home extends Component {
     })
   }
 
-  updateFirebaseRefs(startTime){
+  updateFirebaseRefs(duration){
     this.removeFirebaseListeners();
+
     const { websites } = this.state;
+    const startTimeGcc = this.getTimeMinusMinutes(duration);
+    const startTimeNonGcc = this.getTimeMinusMinutes(duration >= 1440 ? duration : 1440);
+
     Object.keys(websites).forEach((key) => {
       if (websites[key].show) {
         websites[key].websites.map(website => {
+          const startTime = websites[key].isGcc ? startTimeGcc : startTimeNonGcc;
           const dbRef = firebase.database().ref(`/performance/${website.dbRef}/scores`)
           this.setState({
             dbRefs: [...this.state.dbRefs, dbRef],
@@ -467,14 +481,14 @@ class Home extends Component {
     cWebsites[id].show = show;
     this.setState({
       websites: cWebsites,
-    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(this.state.selectedDuration)))
+    }, this.updateFirebaseRefs(this.state.selectedDuration))
   }
 
   handleTimeChange(e) {
     const durationInMinutes = parseInt(e.currentTarget.getAttribute("value"), 10);
     this.setState({
       selectedDuration: durationInMinutes,
-    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(durationInMinutes)))
+    }, this.updateFirebaseRefs(durationInMinutes))
   }
 
   timeIsSelected(time) {

@@ -50,7 +50,9 @@ const Display = ({
       
             })
           }
+          <span style={{fontSize:"12px", marginLeft: "8px", color: 'darkGray'}}><i>*Duration fixed at 24 hours</i></span>
         </Container>
+  
       </Container>
     </div>
   )
