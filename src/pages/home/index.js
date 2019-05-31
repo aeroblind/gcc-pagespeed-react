@@ -12,7 +12,6 @@ class Home extends Component {
 
     this.handleSnapshot = this.handleSnapshot.bind(this);
     this.updateFirebaseRefs = this.updateFirebaseRefs.bind(this);
-    this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.timeIsSelected = this.timeIsSelected.bind(this);
@@ -410,15 +409,8 @@ class Home extends Component {
     this.updateFirebaseRefs(this.state.selectedDuration);
   }
 
-  removeFirebaseListeners() {
-    this.state.dbRefs.map(dbRef => {
-      dbRef.off();
-    })
-  }
-
   updateFirebaseRefs(duration){
-    this.removeFirebaseListeners();
-
+    
     const { websites } = this.state;
     const startTimeGcc = this.getTimeMinusMinutes(duration);
     const startTimeNonGcc = this.getTimeMinusMinutes(duration >= 1440 ? duration : 1440);
@@ -427,14 +419,18 @@ class Home extends Component {
       if (websites[key].show) {
         websites[key].websites.map(website => {
           const startTime = websites[key].isGcc ? startTimeGcc : startTimeNonGcc;
-          const dbRef = firebase.database().ref(`/performance/${website.dbRef}/scores`)
+          const dbRef = firebase.firestore().collection(website.dbRef)
           this.setState({
             dbRefs: [...this.state.dbRefs, dbRef],
           });
           dbRef
-            .orderByChild("fetchTime")
+            .orderBy("lighthouseResult.fetchTime")
             .startAt(startTime)
-            .once("value", (snapshot) => this.handleSnapshot(key, website.id, snapshot))
+            .get()
+            .then(snapshot => this.handleSnapshot(key, website.id, snapshot))
+            .catch(err => {
+              console.log(err);
+            })
         })
       }
     })
@@ -461,15 +457,16 @@ class Home extends Component {
   }
 
   handleSnapshot(key, id, snapshot) {
-    var snapshotValues = snapshot.val() || {};
-    var scores = [];
-    Object.keys(snapshotValues).forEach(key => {
-      scores.push(snapshotValues[key].score);
-    });
+    if (snapshot.empty) {
+      return;
+    }
+    var scores = []
+    snapshot.forEach(doc => {
+      scores.push(doc.data().lighthouseResult.categories.performance.score);
+    })
     var median = this.calculateMedian(scores);
     var percentage = Math.floor(median * 100);
     this.updateWebsiteScore(key, id, percentage);
-    
   }
 
   getTimeMinusMinutes(minutes) {

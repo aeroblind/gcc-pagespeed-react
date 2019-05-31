@@ -16,6 +16,7 @@ class Website extends Component {
     
     this.didChangeDuration = this.didChangeDuration.bind(this);
     this.getTimeMinusMinutes = this.getTimeMinusMinutes.bind(this);
+    this.handleSnapshot = this.handleSnapshot.bind(this);
 
     this.state = {
       startAt: this.getTimeMinusMinutes(60),
@@ -74,18 +75,21 @@ class Website extends Component {
   updateFirebaseRefs(startTime){
     this.removeFirebaseListeners();
     const { dbRefStr } = this.state;
-    const dbRef = firebase.database().ref(`/performance/${dbRefStr}/scores`)
+    const dbRef = firebase.firestore().collection(dbRefStr)
     this.setState({
       dbRefs: [...this.state.dbRefs, dbRef],
     });
     dbRef
-      .orderByChild("fetchTime")
+      .orderBy("lighthouseResult.fetchTime")
       .startAt(startTime)
-      .on("value", (snapshot) => this.handleSnapshot(snapshot))
+      .onSnapshot(this.handleSnapshot)
   }
 
-  handleSnapshot(snapshot) {
-    var scores = snapshot.val() || {};
+  handleSnapshot(querySnapshot) {
+    var scores = []
+    querySnapshot.forEach(doc => {
+      scores.push(doc.data());
+    });
     this.setState({
       scores
     })

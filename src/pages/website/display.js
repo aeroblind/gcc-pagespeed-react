@@ -29,8 +29,8 @@ const Display = ({ state, didChangeDuration }) => {
     const labels = [];	
     const data = [];	
     Object.entries(scores).forEach(([_, score]) => {	
-      labels.push(moment(score.fetchTime).format(durationOptions[selectedDurationIndex].timeFormat));	
-      data.push(score.score);	
+      labels.push(moment(score.lighthouseResult.fetchTime).format(durationOptions[selectedDurationIndex].timeFormat));	
+      data.push(score.lighthouseResult.categories.performance.score);	
     })	
   
      return {	
@@ -75,6 +75,7 @@ const Display = ({ state, didChangeDuration }) => {
           options={options} 	
         />	
       </Container>
+      <span style={{fontSize:"12px", marginLeft: "8px", color: 'darkGray'}}><i>*Updates every 5min</i></span>
     </div>
   )
 }
