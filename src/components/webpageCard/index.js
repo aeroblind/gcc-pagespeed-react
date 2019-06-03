@@ -57,8 +57,13 @@ const WebPageCard = ({title, score, url, dbRef}) => {
           fontSize="12px"
           padding="5px"
         >
-          <a href={`https://${url}`} target="_blank">Link</a>
-          <a href={`/sites/${dbRef}/`} target="_blank">Stream</a>
+          { url && 
+            <a href={`https://${url}`} target="_blank">Link</a>
+          }
+          { dbRef &&
+            <a href={`/sites/${dbRef}/`} target="_blank">Stream</a>
+          }
+          
         </FlexBox>
       </FlexBox>
   )

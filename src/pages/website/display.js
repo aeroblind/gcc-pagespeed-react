@@ -7,12 +7,14 @@ import TimeOption from '../../components/timeOption';
 import EnvironmentSection from '../../components/environmentSection';
 import { Line, Scatter } from 'react-chartjs-2';
 import DatePicker from 'react-datepicker';
+import WebPageCard from '../../components/webpageCard';
 
 
 import "react-datepicker/dist/react-datepicker.css";
 
 
 class DatePickerButton extends React.Component {
+
   render () {
     return (
       <button
@@ -46,6 +48,7 @@ const Display = ({ state, didChangeDuration, didChangeDate }) => {
     selectedDurationIndex,
     isLoading,
     date,
+    stats,
   } = state;
 
   const getGraphData = (label, scores) => {
@@ -55,8 +58,8 @@ const Display = ({ state, didChangeDuration, didChangeDate }) => {
       labels.push(moment(score.lighthouseResult.fetchTime).format(durationOptions[selectedDurationIndex].timeFormat));	
       data.push(score.lighthouseResult.categories.performance.score);	
     })	
-  
-     return {	
+    
+    return {	
       labels,	
       datasets: [	
         {	
@@ -100,6 +103,21 @@ const Display = ({ state, didChangeDuration, didChangeDate }) => {
           />
         </Container>
       </FlexBox>
+      <Container>
+        <div style={{display: 'inline-block', margin: '8px'}}>
+          <FlexBox>
+            { Object.keys(stats).map( (key,index) => (
+                <WebPageCard
+                  key={index}
+                  title={key.toUpperCase()}
+                  score={stats[key]}
+                />
+              ))
+            }
+            
+          </FlexBox>
+        </div>
+      </Container>
       <Container margin={'15px 0 0 0'}>	
         <Line	
           id={999}	

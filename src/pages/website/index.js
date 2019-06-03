@@ -8,6 +8,7 @@ import EnvironmentSection from '../../components/environmentSection';
 import { withRouter } from "react-router";
 import firebase from '../../firebase';
 
+
 import Display from './display';
 
 class Website extends Component {
@@ -21,6 +22,7 @@ class Website extends Component {
     this.didStartRequest = this.didStartRequest.bind(this);
     this.didStopRequest = this.didStopRequest.bind(this);
     this.didChangeDate = this.didChangeDate.bind(this);
+    this.calculateStatistics = this.calculateStatistics.bind(this);
 
     this.state = {
       startAt: this.getTimeMinusMinutes(60),
@@ -29,6 +31,10 @@ class Website extends Component {
       dbRefStr: this.props.match.params.dbRefStr || '',
       dbRef: null,
       scores: [],
+      stats: {
+        avg: 0,
+        median: 0,
+      },
       selectedDurationIndex: 2,
       durationOptions: [
         {
@@ -101,6 +107,35 @@ class Website extends Component {
     }, this.updateFirebaseRefs(startAt, endAt))
   }
 
+  getMedian(values) {
+    if (values.length === 0) return 0;
+    values.sort(function(a,b){
+      return a-b;
+    });
+    var half = Math.floor(values.length / 2);
+    if (values.length % 2)
+      return ((values[half]) * 100).toFixed(1);
+    return (((values[half - 1] + values[half]) / 2.0) * 100).toFixed(1);
+  }
+
+  getAverage(data){
+    return (data.reduce((a, b) => a + b) / data.length * 100).toFixed(1);
+  }
+
+  parsePerformanceScore(scores) {
+    return scores.map(score => score.lighthouseResult.categories.performance.score);
+  }
+
+  calculateStatistics(scores) {
+    const parsedScores = this.parsePerformanceScore(scores);
+    const stats = {}
+    stats.avg = this.getAverage(parsedScores);
+    stats.median = this.getMedian(parsedScores);
+    this.setState({
+      stats,
+    })
+  }
+
   updateFirebaseRefs(startAt, endAt){
     const { dbRefStr } = this.state;
     this.removeFirebaseListeners();
@@ -132,7 +167,7 @@ class Website extends Component {
     });
     this.setState({
       scores
-    })
+    }, this.calculateStatistics(scores))
   }
 
   didChangeDuration(e) {
@@ -150,6 +185,7 @@ class Website extends Component {
       state={this.state}
       didChangeDuration={this.didChangeDuration}
       didChangeDate={this.didChangeDate}
+      calculateStatistics={this.calculateStatistics}
     />
     )
   }
