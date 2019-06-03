@@ -18,6 +18,7 @@ class Website extends Component {
     this.didChangeDuration = this.didChangeDuration.bind(this);
     this.getTimeMinusMinutes = this.getTimeMinusMinutes.bind(this);
     this.handleSnapshot = this.handleSnapshot.bind(this);
+    this.handleQuerySnapshot = this.handleQuerySnapshot.bind(this);
     this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
     this.didStartRequest = this.didStartRequest.bind(this);
     this.didStopRequest = this.didStopRequest.bind(this);
@@ -145,13 +146,17 @@ class Website extends Component {
       ref = firebase.firestore().collection(dbRefStr)
       .orderBy("lighthouseResult.fetchTime")
       .startAt(startAt)
-      .onSnapshot(this.handleSnapshot)
+      .onSnapshot(this.handleQuerySnapshot)
     } else {
       ref = firebase.firestore().collection(dbRefStr)
       .orderBy("lighthouseResult.fetchTime")
       .startAt(startAt)
       .endAt(endAt)
-      .onSnapshot(this.handleSnapshot)
+      .get()
+      .then(snapshot => this.handleSnapshot(snapshot))
+      .catch(err => {
+        console.error(err);
+      })
     }
 
     this.setState({
@@ -159,12 +164,26 @@ class Website extends Component {
     });
   }
 
-  handleSnapshot(querySnapshot) {
+  handleQuerySnapshot(querySnapshot) {
     this.didStopRequest();
     var scores = []
     querySnapshot.forEach(doc => {
       scores.push(doc.data());
     });
+    this.setState({
+      scores
+    }, this.calculateStatistics(scores))
+  }
+
+  handleSnapshot(snapshot) {
+    this.didStopRequest();
+    if (snapshot.empty) {
+      return;
+    }
+    var scores = []
+    snapshot.forEach(doc => {
+      scores.push(doc.data());
+    })
     this.setState({
       scores
     }, this.calculateStatistics(scores))
