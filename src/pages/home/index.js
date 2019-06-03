@@ -429,7 +429,7 @@ class Home extends Component {
             .get()
             .then(snapshot => this.handleSnapshot(key, website.id, snapshot))
             .catch(err => {
-              console.log(err);
+              console.error(err);
             })
         })
       }

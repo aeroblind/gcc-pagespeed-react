@@ -23,7 +23,14 @@ const options = {
 }
 
 const Display = ({ state, didChangeDuration }) => {
-  const { dbRefStr: displayName, timeFormat, scores, durationOptions, selectedDurationIndex } = state;
+  const {
+    dbRefStr: displayName,
+    timeFormat, 
+    scores,
+    durationOptions,
+    selectedDurationIndex,
+    isLoading,
+  } = state;
 
   const getGraphData = (label, scores) => {	
     const labels = [];	
@@ -47,7 +54,7 @@ const Display = ({ state, didChangeDuration }) => {
 
   return (
     <div>
-      <NavBar title="GCC Pagespeed Insights"/>
+      <NavBar title="GCC Pagespeed Insights" isLoading={isLoading}/>
       <Container margin="10px">
         <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {durationOptions[selectedDurationIndex].display}
