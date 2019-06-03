@@ -20,9 +20,11 @@ class Website extends Component {
     this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
     this.didStartRequest = this.didStartRequest.bind(this);
     this.didStopRequest = this.didStopRequest.bind(this);
+    this.didChangeDate = this.didChangeDate.bind(this);
 
     this.state = {
       startAt: this.getTimeMinusMinutes(60),
+      date: new Date(),
       isLoading: false,
       dbRefStr: this.props.match.params.dbRefStr || '',
       dbRef: null,
@@ -88,14 +90,35 @@ class Website extends Component {
     })
   }
 
-  updateFirebaseRefs(startTime){
+  didChangeDate(e){
+    const selectedDateOnly = moment(e).format('L')
+    const startAt = moment(selectedDateOnly, "MM/DD/YYYY").subtract(1, 'days').utc().format();
+    const endAt= moment(selectedDateOnly, "MM/DD/YYYY").utc().format();
+    this.setState({
+      startAt,
+      endAt,
+      date: moment(e).toDate()
+    }, this.updateFirebaseRefs(startAt, endAt))
+  }
+
+  updateFirebaseRefs(startAt, endAt){
     const { dbRefStr } = this.state;
     this.removeFirebaseListeners();
     this.didStartRequest();
-    const ref = firebase.firestore().collection(dbRefStr)
+    let ref = {}
+    if (!endAt) {
+      ref = firebase.firestore().collection(dbRefStr)
       .orderBy("lighthouseResult.fetchTime")
-      .startAt(startTime)
+      .startAt(startAt)
       .onSnapshot(this.handleSnapshot)
+    } else {
+      ref = firebase.firestore().collection(dbRefStr)
+      .orderBy("lighthouseResult.fetchTime")
+      .startAt(startAt)
+      .endAt(endAt)
+      .onSnapshot(this.handleSnapshot)
+    }
+
     this.setState({
       dbRef: ref,
     });
@@ -116,7 +139,8 @@ class Website extends Component {
     const { durationOptions } = this.state;
     const index = parseInt(e.target.value);
     this.setState({
-      selectedDurationIndex: index
+      selectedDurationIndex: index,
+      date: new Date(),
     }, this.updateFirebaseRefs(this.getTimeMinusMinutes(durationOptions[index].value)))
   }
 
@@ -125,6 +149,7 @@ class Website extends Component {
      <Display
       state={this.state}
       didChangeDuration={this.didChangeDuration}
+      didChangeDate={this.didChangeDate}
     />
     )
   }

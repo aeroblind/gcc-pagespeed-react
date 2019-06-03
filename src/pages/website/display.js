@@ -6,9 +6,24 @@ import NavBar from '../../components/navBar';
 import TimeOption from '../../components/timeOption';
 import EnvironmentSection from '../../components/environmentSection';
 import { Line, Scatter } from 'react-chartjs-2';
+import DatePicker from 'react-datepicker';
 
 
 import "react-datepicker/dist/react-datepicker.css";
+
+
+class DatePickerButton extends React.Component {
+  render () {
+    return (
+      <button
+        type="button"
+        className="btn btn-secondary"
+        onClick={this.props.onClick}>
+        {this.props.value}
+      </button>
+    )
+  }
+}
 
 const options = {	
   scales: {	
@@ -22,7 +37,7 @@ const options = {
   }	
 }
 
-const Display = ({ state, didChangeDuration }) => {
+const Display = ({ state, didChangeDuration, didChangeDate }) => {
   const {
     dbRefStr: displayName,
     timeFormat, 
@@ -30,9 +45,10 @@ const Display = ({ state, didChangeDuration }) => {
     durationOptions,
     selectedDurationIndex,
     isLoading,
+    date,
   } = state;
 
-  const getGraphData = (label, scores) => {	
+  const getGraphData = (label, scores) => {
     const labels = [];	
     const data = [];	
     Object.entries(scores).forEach(([_, score]) => {	
@@ -55,26 +71,35 @@ const Display = ({ state, didChangeDuration }) => {
   return (
     <div>
       <NavBar title="GCC Pagespeed Insights" isLoading={isLoading}/>
-      <Container margin="10px">
-        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {durationOptions[selectedDurationIndex].display}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
-          {durationOptions.map((option, index) => {
-            return (
-              <button
-                key={index}
-                className="dropdown-item"
-                type="button"
-                value={index}
-                onClick={didChangeDuration}
-              >
-                {option.display}
-              </button>
-            )
-          })}
-        </div>
-      </Container>
+      <FlexBox padding="10px">
+        <Container>
+          <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {durationOptions[selectedDurationIndex].display}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+            {durationOptions.map((option, index) => {
+              return (
+                <button
+                  key={index}
+                  className="dropdown-item"
+                  type="button"
+                  value={index}
+                  onClick={didChangeDuration}
+                >
+                  {option.display}
+                </button>
+              )
+            })}
+          </div>
+        </Container>
+        <Container>
+          <DatePicker
+              customInput={<DatePickerButton/>}
+              selected={date}
+              onChange={didChangeDate}
+          />
+        </Container>
+      </FlexBox>
       <Container margin={'15px 0 0 0'}>	
         <Line	
           id={999}	
