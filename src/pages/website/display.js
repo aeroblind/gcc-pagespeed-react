@@ -39,17 +39,20 @@ const options = {
   }	
 }
 
-const Display = ({ state, didChangeDuration, didChangeDate }) => {
+const Display = ({ state, didChangeDuration, didChangeDate, didSelectDataPointAtIndex }) => {
   const {
-    dbRefStr: displayName,
-    timeFormat, 
+    dbRefStr: displayName, 
     scores,
+    selectedIndex,
     durationOptions,
     selectedDurationIndex,
     isLoading,
     date,
     stats,
+    weightedAverage,
   } = state;
+
+  console.log(scores);
 
   const getGraphData = (label, scores) => {
     const labels = [];	
@@ -69,6 +72,10 @@ const Display = ({ state, didChangeDuration, didChangeDate }) => {
         }	
       ]	
     }	
+  }
+
+  const getElementAtEvent = (e) => {
+    didSelectDataPointAtIndex(e[0]._index)
   }
 
   return (
@@ -112,7 +119,8 @@ const Display = ({ state, didChangeDuration, didChangeDate }) => {
                   title={key.toUpperCase()}
                   score={stats[key]}
                 />
-              ))
+                )
+              )
             }
             
           </FlexBox>
@@ -122,10 +130,72 @@ const Display = ({ state, didChangeDuration, didChangeDate }) => {
         <Line	
           id={999}	
           data={getGraphData(displayName, scores)} 	
-          options={options} 	
+          options={options}
+          getElementAtEvent={getElementAtEvent}
         />	
       </Container>
       <span style={{fontSize:"12px", marginLeft: "8px", color: 'darkGray'}}><i>*Updates every 5min</i></span>
+      <Container padding="10px" style={{color: 'darkGray'}}>
+        <Container padding="10px 0 20px 0">
+          <span style={{fontSize:"26px", color: 'darkGray'}}>BREAKDOWN</span><span style={{fontSize:"12px", marginLeft: "8px", color: 'darkGray'}}><i>(Click on data points)</i></span>
+        </Container>
+          <table className="table">
+          <thead>
+            <tr style={{color: 'darkGray'}}>
+              <th scope="col">Weight</th>
+              <th scope="col">Metric</th>
+              <th scope="col">Score</th>
+              <th scope="col">Weighted Score</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">5</th>
+              <td>Time To Interactive</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits.interactive.score * 100 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits.interactive.score * 100 * 5 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits.interactive.displayValue : '?' }</td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>Speed Index</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['speed-index'].score * 100 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['speed-index'].score * 100 * 4 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['speed-index'].displayValue : '?' }</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>First Contentful Paint</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-contentful-paint'].score * 100 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-contentful-paint'].score * 100 * 3 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-contentful-paint'].displayValue : '?' }</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>First CPU Idle</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-cpu-idle'].score * 100 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-cpu-idle'].score * 100 * 2 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-cpu-idle'].displayValue : '?' }</td>
+            </tr>
+            <tr>
+              <th scope="row">1</th>
+              <td>First Meaningful Paint</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-meaningful-paint'].score * 100 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-meaningful-paint'].score * 100 * 1 : '?'}</td>
+              <td>{ selectedIndex !== null ? scores[selectedIndex].lighthouseResult.audits['first-meaningful-paint'].displayValue : '?' }</td>
+            </tr>
+            <tr>
+              <th scope="row"></th>
+              <td>Weighted Average</td>
+              <td>N/A</td>
+              <td><b>{ selectedIndex !== null ? (weightedAverage * 100).toFixed(1) : '?' }</b></td>
+              <td>N/A</td>
+            </tr>
+          </tbody>
+        </table>
+      </Container>
+      
     </div>
   )
 }

@@ -7,6 +7,7 @@ import TimeOption from '../../components/timeOption';
 import EnvironmentSection from '../../components/environmentSection';
 import { withRouter } from "react-router";
 import firebase from '../../firebase';
+import * as gccPageSpeedApi from '../../api/gccPageSpeedApi';
 
 
 import Display from './display';
@@ -19,10 +20,12 @@ class Website extends Component {
     this.getTimeMinusMinutes = this.getTimeMinusMinutes.bind(this);
     this.handleSnapshot = this.handleSnapshot.bind(this);
     this.handleQuerySnapshot = this.handleQuerySnapshot.bind(this);
+    this.handleResults = this.handleResults.bind(this);
     this.removeFirebaseListeners = this.removeFirebaseListeners.bind(this);
     this.didStartRequest = this.didStartRequest.bind(this);
     this.didStopRequest = this.didStopRequest.bind(this);
     this.didChangeDate = this.didChangeDate.bind(this);
+    this.didSelectDataPointAtIndex = this.didSelectDataPointAtIndex.bind(this);
     this.calculateStatistics = this.calculateStatistics.bind(this);
 
     this.state = {
@@ -32,6 +35,7 @@ class Website extends Component {
       dbRefStr: this.props.match.params.dbRefStr || '',
       dbRef: null,
       scores: [],
+      selectedIndex: null,
       stats: {
         avg: 0,
         median: 0,
@@ -63,7 +67,8 @@ class Website extends Component {
           display: "24hr",
           timeFormat: 'LTS'
         }
-      ]
+      ],
+      weightedAverage: 0
     }
   }
 
@@ -97,7 +102,14 @@ class Website extends Component {
     })
   }
 
-  didChangeDate(e){
+  didSelectDataPointAtIndex(index) {
+    this.setState({
+      selectedIndex: index,
+      weightedAverage: this.getWeightedAverage(this.state.scores[index])
+    })
+  }
+
+  async didChangeDate(e){
     const selectedDateOnly = moment(e).format('L')
     const startAt = moment(selectedDateOnly, "MM/DD/YYYY").subtract(1, 'days').utc().format();
     const endAt= moment(selectedDateOnly, "MM/DD/YYYY").utc().format();
@@ -105,7 +117,7 @@ class Website extends Component {
       startAt,
       endAt,
       date: moment(e).toDate()
-    }, this.updateFirebaseRefs(startAt, endAt))
+    }, await this.updateFirebaseRefs(startAt, endAt))
   }
 
   getMedian(values) {
@@ -123,6 +135,15 @@ class Website extends Component {
     return (data.reduce((a, b) => a + b) / data.length * 100).toFixed(1);
   }
 
+  getWeightedAverage(score){
+    const interactive = score.lighthouseResult.audits['interactive'].score * 5;
+    const speedIndex = score.lighthouseResult.audits['speed-index'].score * 4;
+    const firstContentfulPaint = score.lighthouseResult.audits['first-contentful-paint'].score * 3;
+    const firstCpuIdle = score.lighthouseResult.audits['first-cpu-idle'].score * 2;
+    const firstMeaningingfulPaint = score.lighthouseResult.audits['first-meaningful-paint'].score * 1;
+    return (interactive + speedIndex + firstContentfulPaint + firstCpuIdle + firstMeaningingfulPaint)/15;
+  }
+
   parsePerformanceScore(scores) {
     return scores.map(score => score.lighthouseResult.categories.performance.score);
   }
@@ -137,31 +158,42 @@ class Website extends Component {
     })
   }
 
-  updateFirebaseRefs(startAt, endAt){
+  async updateFirebaseRefs(startAt, endAt){
     const { dbRefStr } = this.state;
     this.removeFirebaseListeners();
     this.didStartRequest();
-    let ref = {}
-    if (!endAt) {
-      ref = firebase.firestore().collection(dbRefStr)
-      .orderBy("lighthouseResult.fetchTime")
-      .startAt(startAt)
-      .onSnapshot(this.handleQuerySnapshot)
-    } else {
-      ref = firebase.firestore().collection(dbRefStr)
-      .orderBy("lighthouseResult.fetchTime")
-      .startAt(startAt)
-      .endAt(endAt)
-      .get()
-      .then(snapshot => this.handleSnapshot(snapshot))
-      .catch(err => {
-        console.error(err);
-      })
-    }
+    const results = await gccPageSpeedApi.getPerformanceScoreByWebsite({websiteId: dbRefStr, startAt, endAt});
+    this.handleResults(results);
+    // let ref = {}
+    // if (!endAt) {
+    //   ref = firebase.firestore().collection(dbRefStr)
+    //   .orderBy("lighthouseResult.fetchTime")
+    //   .startAt(startAt)
+    //   .onSnapshot(this.handleQuerySnapshot)
+    // } else {
+    //   const results = await gccPageSpeedApi.getPerformanceScoreByWebsite({websiteId: dbRefStr, startAt, endAt});
+    //   this.handleResults(results);
+    //   ref = firebase.firestore().collection(dbRefStr)
+    //   .orderBy("lighthouseResult.fetchTime")
+    //   .startAt(startAt)
+    //   .endAt(endAt)
+    //   .get()
+    //   .then(snapshot => this.handleSnapshot(snapshot))
+    //   .catch(err => {
+    //     console.error(err);
+    //   })
+    // }
 
+    // this.setState({
+    //   dbRef: ref,
+    // });
+  }
+
+  handleResults(scores) {
+    this.didStopRequest();
     this.setState({
-      dbRef: ref,
-    });
+      scores,
+    }, this.calculateStatistics(scores));
   }
 
   handleQuerySnapshot(querySnapshot) {
@@ -189,13 +221,13 @@ class Website extends Component {
     }, this.calculateStatistics(scores))
   }
 
-  didChangeDuration(e) {
+  async didChangeDuration(e) {
     const { durationOptions } = this.state;
     const index = parseInt(e.target.value);
     this.setState({
       selectedDurationIndex: index,
       date: new Date(),
-    }, this.updateFirebaseRefs(this.getTimeMinusMinutes(durationOptions[index].value)))
+    }, await this.updateFirebaseRefs(this.getTimeMinusMinutes(durationOptions[index].value)))
   }
 
   render(){
@@ -205,6 +237,7 @@ class Website extends Component {
       didChangeDuration={this.didChangeDuration}
       didChangeDate={this.didChangeDate}
       calculateStatistics={this.calculateStatistics}
+      didSelectDataPointAtIndex={this.didSelectDataPointAtIndex}
     />
     )
   }
