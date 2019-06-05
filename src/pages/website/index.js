@@ -111,8 +111,8 @@ class Website extends Component {
 
   async didChangeDate(e){
     const selectedDateOnly = moment(e).format('L')
-    const startAt = moment(selectedDateOnly, "MM/DD/YYYY").subtract(1, 'days').utc().format();
-    const endAt= moment(selectedDateOnly, "MM/DD/YYYY").utc().format();
+    const startAt = moment(selectedDateOnly, "MM/DD/YYYY").utc().format();
+    const endAt= moment(selectedDateOnly, "MM/DD/YYYY").add(1, 'days').utc().format();
     this.setState({
       startAt,
       endAt,

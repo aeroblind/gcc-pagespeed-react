@@ -52,8 +52,6 @@ const Display = ({ state, didChangeDuration, didChangeDate, didSelectDataPointAt
     weightedAverage,
   } = state;
 
-  console.log(scores);
-
   const getGraphData = (label, scores) => {
     const labels = [];	
     const data = [];	
