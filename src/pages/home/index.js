@@ -144,6 +144,23 @@ class Home extends Component {
             },
           ]
         },
+        prodNoTagsWebFonts: {
+          id: 'prodNoTagsWebFonts',
+          displayName: 'BLINDS.COM - NO TAGS/WEB FONTS',
+          dev: true,
+          show: true,
+          isGcc: true,
+          websites: [
+            {
+              id: 'bcom-prod-no-tags-web-fonts',
+              show: true,
+              score: 0,
+              displayName: 'Home',
+              url: 'www.blinds.com/?nowebfonts=true&usedtm=false',
+              dbRef: 'bcom-prod-no-tags-web-fonts',
+            },
+          ]
+        },
         stage: {
           id: 'stage',
           displayName: 'BLINDS.COM - STAGE',
