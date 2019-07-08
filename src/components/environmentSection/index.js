@@ -3,7 +3,7 @@ import FlexBox from '../styled/FlexBox';
 import Container from '../styled/Container';
 import WebPageCard from '../webpageCard';
 
-const EnvironmentSection = ({ id, title, show, websites = [], handleVisibilityChange }) => {
+const EnvironmentSection = ({ id, title, show, websites = [], scores = {}, handleVisibilityChange }) => {
   const handleClick = (e) => {;
     const targetShow = e.target.getAttribute('aria-expanded') === 'true'
     handleVisibilityChange(id, targetShow);
@@ -54,7 +54,7 @@ const EnvironmentSection = ({ id, title, show, websites = [], handleVisibilityCh
                   <WebPageCard
                     key={index}
                     title={website.displayName}
-                    score={website.score}
+                    score={scores[website.dbRef] || 0 }
                     url={website.url}
                     dbRef={website.dbRef}
                   />

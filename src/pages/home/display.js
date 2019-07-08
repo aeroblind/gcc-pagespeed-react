@@ -17,8 +17,7 @@ const Display = ({
   handleDevButtonClick
 }) => {
 
-  const { websites, devMode } = state;
-
+  const { websites, devMode, scores } = state;
   return (
     <div>
       <NavBar title="GCC Pagespeed Insights"
@@ -44,10 +43,10 @@ const Display = ({
                     title={websites[key].displayName}
                     websites={websites[key].websites}
                     handleVisibilityChange={handleVisibilityChange}
+                    scores={scores}
                   />
                 )
               }
-      
             })
           }
           <span style={{fontSize:"12px", marginLeft: "8px", color: 'darkGray'}}><i>*Duration fixed at 24 hours</i></span>

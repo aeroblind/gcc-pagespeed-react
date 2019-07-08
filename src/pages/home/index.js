@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import firebase from '../../firebase';
+//  import firebase from '../../firebase';
 import moment from 'moment';
-import { Line } from 'react-chartjs-2';
 import Display from './display';
+import * as api from '../../api/gccPageSpeedApi';
 
 import './home.css';
 
@@ -10,12 +10,10 @@ class Home extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSnapshot = this.handleSnapshot.bind(this);
-    this.updateFirebaseRefs = this.updateFirebaseRefs.bind(this);
+    this.updatePerformanceScores = this.updatePerformanceScores.bind(this);
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.timeIsSelected = this.timeIsSelected.bind(this);
-    this.updateWebsiteScore = this.updateWebsiteScore.bind(this);
     this.handleDevButtonClick = this.handleDevButtonClick.bind(this);
 
     this.state = {
@@ -419,90 +417,63 @@ class Home extends Component {
         },
       },
       dbRefs: [],
+      scores: [],
     }
   }
 
   componentDidMount(){
-    this.updateFirebaseRefs(this.state.selectedDuration);
+    this.updatePerformanceScores(this.state.selectedDuration);
   }
 
-  updateFirebaseRefs(duration){
-    
+  async updatePerformanceScores(duration) {
     const { websites } = this.state;
     const startTimeGcc = this.getTimeMinusMinutes(duration);
     const startTimeNonGcc = this.getTimeMinusMinutes(duration >= 1440 ? duration : 1440);
+    
+    const websitesData = [];
+
+    const fields = ['lighthouseResult.categories.performance.score'];
 
     Object.keys(websites).forEach((key) => {
       if (websites[key].show) {
         websites[key].websites.map(website => {
-          const startTime = websites[key].isGcc ? startTimeGcc : startTimeNonGcc;
-          const dbRef = firebase.firestore().collection(website.dbRef)
-          this.setState({
-            dbRefs: [...this.state.dbRefs, dbRef],
+          let startAt = startTimeGcc;
+          if (!websites[key].isGcc) {
+            startAt = startTimeNonGcc;
+          }
+          websitesData.push({
+            websiteId: website.dbRef,
+            startAt,
+            endAt: null, 
+            fields,
           });
-          dbRef
-            .orderBy("lighthouseResult.fetchTime")
-            .startAt(startTime)
-            .get()
-            .then(snapshot => this.handleSnapshot(key, website.id, snapshot))
-            .catch(err => {
-              console.error(err);
-            })
         })
       }
     })
-  }
 
-  calculateMedian(values) {
-    if (values.length === 0) return 0;
-    values.sort(function(a,b){
-      return a-b;
-    });
-    var half = Math.floor(values.length / 2);
-    if (values.length % 2)
-      return values[half];
-    return (values[half - 1] + values[half]) / 2.0;
-  }
-
-  updateWebsiteScore(env, id, score) {
-    let cWebsites = Object.assign({}, this.state.websites)
-    const index = cWebsites[env].websites.findIndex(website => website.id === id);
-    cWebsites[env].websites[index].score = score;
+    const scores = await api.getStatisticsForWebsites(websitesData);
     this.setState({
-      websites: cWebsites
+      scores
     })
-  }
-
-  handleSnapshot(key, id, snapshot) {
-    if (snapshot.empty) {
-      return;
-    }
-    var scores = []
-    snapshot.forEach(doc => {
-      scores.push(doc.data().lighthouseResult.categories.performance.score);
-    })
-    var median = this.calculateMedian(scores);
-    var percentage = Math.floor(median * 100);
-    this.updateWebsiteScore(key, id, percentage);
   }
 
   getTimeMinusMinutes(minutes) {
     return moment.utc().subtract(minutes, 'minutes').format();
   }
 
-  handleVisibilityChange(id, show) {
+  async handleVisibilityChange(id, show) {
     const cWebsites = Object.assign({}, this.state.websites);
     cWebsites[id].show = show;
     this.setState({
       websites: cWebsites,
-    }, this.updateFirebaseRefs(this.state.selectedDuration))
+    }, await this.updatePerformanceScores(this.state.selectedDuration))
   }
 
-  handleTimeChange(e) {
+  async handleTimeChange(e) {
     const durationInMinutes = parseInt(e.currentTarget.getAttribute("value"), 10);
     this.setState({
       selectedDuration: durationInMinutes,
-    }, this.updateFirebaseRefs(durationInMinutes))
+    }, await this.updatePerformanceScores(durationInMinutes))
   }
 
   timeIsSelected(time) {
