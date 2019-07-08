@@ -6,7 +6,7 @@ const Dotenv = require('dotenv-webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: ['./src/App'],
   output: {
     path: path.resolve(__dirname, 'dist/'),
@@ -27,9 +27,6 @@ module.exports = {
     ],
   },
   resolve: { extensions: ['*', '.js', '.jsx'] },
-  optimization: {
-    minimizer: [new UglifyJsPlugin()],
-  },
   plugins: [
     new clearWebpackPlugin(['dist']),
     new webpack.HotModuleReplacementPlugin(),
