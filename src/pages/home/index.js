@@ -129,7 +129,7 @@ class Home extends Component {
               show: true,
               score: 0,
               displayName: 'PLP',
-              url: 'www.blinds.com/c/wood-blinds/54/?usedtm=false',
+              url: 'www.blinds.com/c/wood-blinds/40/?usedtm=false',
               dbRef: 'bcom-prod-plp-no-tags',
             },
             {
